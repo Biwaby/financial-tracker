@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Wallet {
 
     @Id
-    @SequenceGenerator(sequenceName = "wallet_id_seq", name = "wallet_id_seq")
+    @SequenceGenerator(sequenceName = "wallet_id_seq", name = "wallet_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "wallet_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;

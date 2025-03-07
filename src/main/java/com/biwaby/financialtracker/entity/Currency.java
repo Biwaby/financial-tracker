@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Currency {
 
     @Id
-    @SequenceGenerator(sequenceName = "currency_id_seq", name = "currency_id_seq")
+    @SequenceGenerator(sequenceName = "currency_id_seq", name = "currency_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "currency_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;

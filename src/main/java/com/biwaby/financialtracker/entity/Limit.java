@@ -18,7 +18,7 @@ import java.util.Objects;
 public class Limit {
 
     @Id
-    @SequenceGenerator(sequenceName = "limit_id_seq", name = "limit_id_seq")
+    @SequenceGenerator(sequenceName = "limit_id_seq", name = "limit_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "limit_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;

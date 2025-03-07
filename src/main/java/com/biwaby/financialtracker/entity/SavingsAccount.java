@@ -19,7 +19,7 @@ import java.util.Objects;
 public class SavingsAccount {
 
     @Id
-    @SequenceGenerator(sequenceName = "savings_account_id_seq", name = "savings_account_id_seq")
+    @SequenceGenerator(sequenceName = "savings_account_id_seq", name = "savings_account_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "savings_account_id_seq", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;

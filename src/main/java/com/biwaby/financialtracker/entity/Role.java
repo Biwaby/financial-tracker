@@ -16,7 +16,7 @@ import java.util.Objects;
 public class Role {
 
     @Id
-    @SequenceGenerator(sequenceName = "role_id_seq", name = "role_id_seq")
+    @SequenceGenerator(sequenceName = "role_id_seq", name = "role_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "role_seq_id", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private Long id;
