@@ -1,5 +1,6 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -19,6 +20,7 @@ public class Role {
     @SequenceGenerator(sequenceName = "role_id_seq", name = "role_id_seq", allocationSize = 1)
     @GeneratedValue(generator = "role_seq_id", strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
+    @JsonIgnore
     private Long id;
 
     @Column(name = "name", nullable = false, length = 50)
