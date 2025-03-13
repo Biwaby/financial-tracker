@@ -4,6 +4,7 @@ import com.biwaby.financialtracker.entity.Role;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.RoleRepository;
 import com.biwaby.financialtracker.service.RoleService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,12 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
 
-    public Role save(Role role) {
+    private Role save(Role role) {
         return roleRepository.save(role);
     }
 
     @Override
+    @Transactional
     public Role add(Role role) {
         return save(role);
     }
@@ -41,6 +43,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public Role edit(Long id, Role role) {
         Role roleToEdit = getById(id);
         roleToEdit.setName(role.getName());
@@ -48,6 +51,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Role roleToDelete = getById(id);
         roleRepository.delete(roleToDelete);
