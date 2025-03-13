@@ -1,9 +1,11 @@
 package com.biwaby.financialtracker.controller.user;
 
+import com.biwaby.financialtracker.dto.UserDto;
+import com.biwaby.financialtracker.dto.UserEditDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
-import com.biwaby.financialtracker.entity.User;
+import com.biwaby.financialtracker.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,62 +16,46 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    @PostMapping("/register")
-    public ResponseEntity<ObjectResponse> register(
-            @RequestBody User user
-    ) {
-        ObjectResponse response = new ObjectResponse(
-                "User with username %s registered successfully".formatted(user.getUsername()),
-                HttpStatus.OK.toString(),
-                null
-        );
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ObjectResponse> login(
-            @RequestBody User user
-    ) {
-        ObjectResponse response = new ObjectResponse(
-                "Welcome back, %s!".formatted(user.getUsername()),
-                HttpStatus.OK.toString(),
-                null
-        );
-        return ResponseEntity.ok(response);
-    }
+    private final UserService userService;
 
     @GetMapping("/get-self")
     public ResponseEntity<ObjectResponse> getSelf() {
-        User user = new User();
+        UserDto userDto = userService.getSelf();
         ObjectResponse response = new ObjectResponse(
-                "User with username %s".formatted(user.getUsername()),
+                "User with username %s".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
-                user
+                userDto
         );
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/edit-self")
     public ResponseEntity<EditResponse> editSelf(
-            @RequestBody User user
+            @RequestBody UserEditDto userEditDto
     ) {
-        User beforeUser = new User();
+        UserDto toEditUser = userService.getSelf();
+        UserEditDto oldUser = new UserEditDto(
+                toEditUser.getUsername(),
+                toEditUser.getPassword()
+        );
+        UserEditDto editedUser = userService.editSelf(userEditDto);
         EditResponse response = new EditResponse(
-                "User with username %s has been successfully edited".formatted(beforeUser.getUsername()),
+                "User with username %s has been successfully edited".formatted(oldUser.getUsername()),
                 HttpStatus.OK.toString(),
-                beforeUser,
-                user
+                oldUser,
+                editedUser
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete-self")
     public ResponseEntity<DeleteResponse> deleteSelf() {
-        User user = new User();
+        UserDto userDto = userService.getSelf();
+        userService.deleteSelf();
         DeleteResponse response = new DeleteResponse(
-                "User with username %s has been successfully deleted".formatted(user.getUsername()),
+                "User with username %s has been successfully deleted".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
-                user
+                null
         );
         return ResponseEntity.ok(response);
     }
