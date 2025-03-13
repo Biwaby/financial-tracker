@@ -5,15 +5,20 @@ import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Currency;
+import com.biwaby.financialtracker.service.CurrencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/v1/admin/currencies")
 @RequiredArgsConstructor
 public class CurrencyController {
+
+    private final CurrencyService currencyService;
 
     @PostMapping("/add")
     public ResponseEntity<ObjectResponse> add(
@@ -22,7 +27,7 @@ public class CurrencyController {
         ObjectResponse response = new ObjectResponse(
                 "Currency added successfully",
                 HttpStatus.OK.toString(),
-                null
+                currencyService.add(currency)
         );
         return ResponseEntity.ok(response);
     }
@@ -34,7 +39,7 @@ public class CurrencyController {
         ObjectResponse response = new ObjectResponse(
                 "Currency with id %s".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                currencyService.getById(id)
         );
         return ResponseEntity.ok(response);
     }
@@ -44,7 +49,9 @@ public class CurrencyController {
         ObjectListResponse response = new ObjectListResponse(
                 "Currencies list",
                 HttpStatus.OK.toString(),
-                null
+                currencyService.getAll().stream()
+                        .map(currency -> (Object) currency)
+                        .collect(Collectors.toList())
         );
         return ResponseEntity.ok(response);
     }
@@ -54,11 +61,18 @@ public class CurrencyController {
             @RequestParam Long id,
             @RequestBody Currency currency
     ) {
+        Currency toEdit = currencyService.getById(id);
+        Currency oldCurrency = new Currency(
+                toEdit.getId(),
+                toEdit.getCode(),
+                toEdit.getName()
+        );
+        Currency edited = currencyService.edit(id, currency);
         EditResponse response = new EditResponse(
                 "Currency with id %s has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null,
-                null
+                oldCurrency,
+                edited
         );
         return ResponseEntity.ok(response);
     }
@@ -67,10 +81,12 @@ public class CurrencyController {
     public ResponseEntity<DeleteResponse> deleteById(
             @RequestParam Long id
     ) {
+        Currency deleted = currencyService.getById(id);
+        currencyService.delete(id);
         DeleteResponse response = new DeleteResponse(
                 "Currency with id %s has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                deleted
         );
         return ResponseEntity.ok(response);
     }
