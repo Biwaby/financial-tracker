@@ -5,24 +5,30 @@ import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Role;
+import com.biwaby.financialtracker.service.RoleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/admin/roles")
 @RequiredArgsConstructor
 public class RoleController {
 
+    private final RoleService roleService;
+
     @PostMapping("/add")
     public ResponseEntity<ObjectResponse> add(
-            @RequestBody Role role
+            @Valid @RequestBody Role role
     ) {
         ObjectResponse response = new ObjectResponse(
                 "Role added successfully",
                 HttpStatus.OK.toString(),
-                null
+                roleService.add(role)
         );
         return ResponseEntity.ok(response);
     }
@@ -34,7 +40,7 @@ public class RoleController {
         ObjectResponse response = new ObjectResponse(
                 "Role with id %s".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                roleService.getById(id)
         );
         return ResponseEntity.ok(response);
     }
@@ -42,9 +48,11 @@ public class RoleController {
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
         ObjectListResponse response = new ObjectListResponse(
-                "Role list",
+                "Roles list",
                 HttpStatus.OK.toString(),
-                null
+                roleService.getAll().stream()
+                        .map(role -> (Object) role)
+                        .collect(Collectors.toList())
         );
         return ResponseEntity.ok(response);
     }
@@ -52,13 +60,19 @@ public class RoleController {
     @PutMapping("/edit")
     public ResponseEntity<EditResponse> edit(
             @RequestParam Long id,
-            @RequestBody Role role
+            @Valid @RequestBody Role role
     ) {
+        Role toEdit = roleService.getById(id);
+        Role oldRole = new Role(
+                toEdit.getId(),
+                toEdit.getName()
+        );
+        Role edited = roleService.edit(id, role);
         EditResponse response = new EditResponse(
                 "Role with id %s has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null,
-                null
+                oldRole,
+                edited
         );
         return ResponseEntity.ok(response);
     }
@@ -67,10 +81,12 @@ public class RoleController {
     public ResponseEntity<DeleteResponse> delete(
             @RequestParam Long id
     ) {
+        Role deleted = roleService.getById(id);
+        roleService.delete(id);
         DeleteResponse response = new DeleteResponse(
                 "Role with id %s has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                deleted
         );
         return ResponseEntity.ok(response);
     }
