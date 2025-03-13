@@ -32,8 +32,8 @@ databaseChangeLog:
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createSequence:
-            incrementBy: 50
-            sequenceName: role_seq_id
+            incrementBy: 1
+            sequenceName: role_id_seq
             startValue: 1
   - changeSet:
       id: 1741356368590-5
