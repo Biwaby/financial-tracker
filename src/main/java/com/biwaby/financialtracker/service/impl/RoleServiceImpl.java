@@ -40,6 +40,16 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getByAuthority(String authority) {
+        return roleRepository.findByName(authority).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Role with authority %s is not found".formatted(authority)
+                )
+        );
+    }
+
+    @Override
     public List<Role> getAll() {
         return roleRepository.findAll();
     }
