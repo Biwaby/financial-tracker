@@ -21,3 +21,12 @@ spring:
         use_sql_comments: true
         highlight_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: info
+
+authorization:
+  token:
+    expiration-time-millis: ${TOKEN_EXPIRATION_TIME_MILLIS}
+    signing-key-secret: ${TOKEN_SECRET}
