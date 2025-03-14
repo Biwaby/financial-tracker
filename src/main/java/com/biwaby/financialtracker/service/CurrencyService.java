@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface CurrencyService {
 
+    Currency save(Currency currency);
     Currency add(Currency currency);
     Currency getById(Long id);
     List<Currency> getAll();

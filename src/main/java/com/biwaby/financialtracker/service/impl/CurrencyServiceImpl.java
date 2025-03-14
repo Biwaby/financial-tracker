@@ -17,7 +17,9 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     private final CurrencyRepository currencyRepository;
 
-    private Currency save(Currency currency) {
+    @Override
+    @Transactional
+    public Currency save(Currency currency) {
         return currencyRepository.save(currency);
     }
 
