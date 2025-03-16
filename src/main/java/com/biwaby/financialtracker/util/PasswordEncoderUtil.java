@@ -1,16 +1,14 @@
 package com.biwaby.financialtracker.util;
 
-import lombok.experimental.UtilityClass;
-import org.springframework.context.annotation.Bean;
+import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@UtilityClass
 @Component
+@NoArgsConstructor
 public class PasswordEncoderUtil {
 
-    @Bean
     public static PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
