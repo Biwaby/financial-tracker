@@ -17,7 +17,7 @@ public interface UserService {
     User getCurrentUserEntity();
     UserDto getSelf();
     List<UserDto> getAll(Integer pageSize, Integer pageNumber);
-    UserEditDto editSelf(UserEditDto userEditDto);
+    UserDto editSelf(UserEditDto userEditDto);
     void deleteById(Long id);
     void deleteByUsername(String username);
     void deleteSelf();

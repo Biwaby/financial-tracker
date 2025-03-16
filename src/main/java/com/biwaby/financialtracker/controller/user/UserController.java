@@ -6,6 +6,7 @@ import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,21 +30,23 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/edit-self")
+    @PatchMapping("/edit-self")
     public ResponseEntity<EditResponse> editSelf(
-            @RequestBody UserEditDto userEditDto
+            @RequestBody @Valid UserEditDto userEditDto
     ) {
-        UserDto toEditUser = userService.getSelf();
-        UserEditDto oldUser = new UserEditDto(
-                toEditUser.getUsername(),
-                toEditUser.getPassword()
+        UserDto editUser = userService.getSelf();
+        UserDto beforeEditUser = new UserDto(
+                editUser.getUsername(),
+                editUser.getRoleName(),
+                editUser.getRegisteredAt()
         );
-        UserEditDto editedUser = userService.editSelf(userEditDto);
+        String responseText = "User with username %s has been successfully edited".formatted(editUser.getUsername());
+        UserDto afterEditUser = userService.editSelf(userEditDto);
         EditResponse response = new EditResponse(
-                "User with username %s has been successfully edited".formatted(oldUser.getUsername()),
+                responseText,
                 HttpStatus.OK.toString(),
-                oldUser,
-                editedUser
+                beforeEditUser,
+                afterEditUser
         );
         return ResponseEntity.ok(response);
     }

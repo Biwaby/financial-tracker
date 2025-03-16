@@ -99,13 +99,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserEditDto editSelf(UserEditDto userEditDto) {
+    public UserDto editSelf(UserEditDto userEditDto) {
         User user = getCurrentUserEntity();
-        user.setUsername(userEditDto.getUsername());
-        user.setPassword(PasswordEncoderUtil.getPasswordEncoder()
-                .encode(userEditDto.getPassword())
-        );
-        return userMapper.toEditDto(save(user));
+
+        if (userEditDto.getUsername() != null && !userEditDto.getUsername().isEmpty()) {
+            user.setUsername(userEditDto.getUsername());
+        }
+        if (userEditDto.getPassword() != null && !userEditDto.getPassword().isEmpty()) {
+            user.setPassword(PasswordEncoderUtil.getPasswordEncoder()
+                    .encode(userEditDto.getPassword())
+            );
+        }
+
+        return userMapper.toDto(save(user));
     }
 
     @Override
