@@ -13,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -30,6 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .encode(request.getPassword())
         );
         user.setRole(roleService.getByAuthority("USER"));
+        user.setRegisteredAt(LocalDateTime.now());
 
         userService.create(user);
         var jwt = jwtService.generateToken(user);
