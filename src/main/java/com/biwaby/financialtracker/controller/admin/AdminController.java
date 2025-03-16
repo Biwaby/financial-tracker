@@ -50,7 +50,7 @@ public class AdminController {
             @RequestParam Integer pageNumber
     ) {
         ObjectListResponse response = new ObjectListResponse(
-                "User list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
+                "Users list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
                 userService.getAll(pageSize, pageNumber).stream()
                         .map(userDto -> (Object) userDto)
