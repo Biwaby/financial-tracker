@@ -37,7 +37,6 @@ public class User implements UserDetails {
     @JoinColumn(
             name = "role_id",
             referencedColumnName = "id",
-            unique = true,
             nullable = false
     )
     private Role role;

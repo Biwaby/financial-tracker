@@ -413,15 +413,6 @@ databaseChangeLog:
             constraintName: uc_limits_wallet
             tableName: limits
   - changeSet:
-      id: 1741356368590-20
-      author: Biwaby
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: role_id
-            constraintName: uc_users_role
-            tableName: users
-  - changeSet:
       id: 1741356368590-21
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
