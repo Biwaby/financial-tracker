@@ -36,6 +36,7 @@ public class UserController {
     ) {
         UserDto editUser = userService.getSelf();
         UserDto beforeEditUser = new UserDto(
+                editUser.getId(),
                 editUser.getUsername(),
                 editUser.getRoleName(),
                 editUser.getRegisteredAt()

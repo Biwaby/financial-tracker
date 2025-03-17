@@ -102,6 +102,12 @@ public class UserServiceImpl implements UserService {
     public UserDto editSelf(UserEditDto userEditDto) {
         User user = getCurrentUserEntity();
 
+        if (userEditDto.getUsername() == null && userEditDto.getPassword() == null) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Either username or password are required"
+            );
+        }
         if (userEditDto.getUsername() != null && !userEditDto.getUsername().isEmpty()) {
             user.setUsername(userEditDto.getUsername());
         }

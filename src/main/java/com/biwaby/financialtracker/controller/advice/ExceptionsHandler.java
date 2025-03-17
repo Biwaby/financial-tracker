@@ -6,6 +6,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,6 +52,17 @@ public class ExceptionsHandler {
                 new ErrorResponse(
                         e.getMessage(),
                         HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                        e.getClass().getName()
+                )
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleException(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                new ErrorResponse(
+                        "Incorrect password entered",
+                        HttpStatus.UNAUTHORIZED.toString(),
                         e.getClass().getName()
                 )
         );

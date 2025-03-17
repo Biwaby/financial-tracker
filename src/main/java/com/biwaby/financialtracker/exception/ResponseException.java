@@ -7,7 +7,7 @@ public class ResponseException extends RuntimeException {
 
     private final Integer statusCode;
     private final String message;
-    private String exceptionClassName;
+    private final String exceptionClassName;
 
     public ResponseException(Integer statusCode, String message, String exceptionClassName) {
         super(message);
@@ -20,5 +20,6 @@ public class ResponseException extends RuntimeException {
         super(message);
         this.statusCode = statusCode;
         this.message = message;
+        this.exceptionClassName = ResponseException.class.getName();
     }
 }

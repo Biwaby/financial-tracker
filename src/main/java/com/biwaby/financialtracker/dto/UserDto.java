@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDto implements Serializable {
 
+    private Long id;
     private String username;
     private String roleName;
     private LocalDateTime registeredAt;
