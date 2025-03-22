@@ -26,7 +26,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     @Transactional
-    public Currency add(Currency currency) {
+    public Currency create(Currency currency) {
         String currencyCode = currency.getCode().toUpperCase();
         currency.setCode(currencyCode);
 
@@ -62,8 +62,8 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     @Transactional
-    public Currency edit(Long id, CurrencyUpdateDto dto) {
-        Currency currencyToEdit = getById(id);
+    public Currency update(Long id, CurrencyUpdateDto dto) {
+        Currency currencyToUpdate = getById(id);
 
         if (dto.getCode() != null && !dto.getCode().isEmpty()) {
             String currencyCode = dto.getCode().toUpperCase();
@@ -75,7 +75,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                         "Currency with code <%s> already exists".formatted(dto.getCode())
                 );
             }
-            currencyToEdit.setCode(dto.getCode());
+            currencyToUpdate.setCode(dto.getCode());
         }
         if (dto.getName() != null && !dto.getName().isEmpty()) {
             if (currencyRepository.existsByName(dto.getName())) {
@@ -84,14 +84,14 @@ public class CurrencyServiceImpl implements CurrencyService {
                         "Currency with name <%s> already exists".formatted(dto.getName())
                 );
             }
-            currencyToEdit.setName(dto.getName());
+            currencyToUpdate.setName(dto.getName());
         }
-        return save(currencyToEdit);
+        return save(currencyToUpdate);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         Currency currencyToDelete = getById(id);
         currencyRepository.delete(currencyToDelete);
     }

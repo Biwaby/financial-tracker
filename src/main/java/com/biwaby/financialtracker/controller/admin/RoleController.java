@@ -21,14 +21,14 @@ public class RoleController {
 
     private final RoleService roleService;
 
-    @PostMapping("/add")
-    public ResponseEntity<ObjectResponse> add(
+    @PostMapping("/create")
+    public ResponseEntity<ObjectResponse> create(
             @Valid @RequestBody Role role
     ) {
         ObjectResponse response = new ObjectResponse(
                 "Role added successfully",
                 HttpStatus.OK.toString(),
-                roleService.add(role)
+                roleService.create(role)
         );
         return ResponseEntity.ok(response);
     }
@@ -58,7 +58,7 @@ public class RoleController {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<EditResponse> edit(
+    public ResponseEntity<EditResponse> editById(
             @RequestParam Long id,
             @Valid @RequestBody Role role
     ) {
@@ -67,7 +67,7 @@ public class RoleController {
                 toEdit.getId(),
                 toEdit.getName()
         );
-        Role edited = roleService.edit(id, role);
+        Role edited = roleService.update(id, role);
         EditResponse response = new EditResponse(
                 "Role with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -78,11 +78,11 @@ public class RoleController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> delete(
+    public ResponseEntity<DeleteResponse> deleteById(
             @RequestParam Long id
     ) {
         Role deleted = roleService.getById(id);
-        roleService.delete(id);
+        roleService.deleteById(id);
         DeleteResponse response = new DeleteResponse(
                 "Role with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),

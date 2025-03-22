@@ -1,7 +1,7 @@
 package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.UserEditDto;
+import com.biwaby.financialtracker.dto.UserUpdateDto;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.mapper.UserMapper;
@@ -99,8 +99,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto editSelf(UserEditDto userEditDto) {
-        User user = getCurrentUserEntity();
+    public UserDto updateSelf(UserUpdateDto userEditDto) {
+        User userToUpdate = getCurrentUserEntity();
 
         if (userEditDto.getUsername() == null && userEditDto.getPassword() == null) {
             throw new ResponseException(
@@ -109,15 +109,15 @@ public class UserServiceImpl implements UserService {
             );
         }
         if (userEditDto.getUsername() != null && !userEditDto.getUsername().isEmpty()) {
-            user.setUsername(userEditDto.getUsername());
+            userToUpdate.setUsername(userEditDto.getUsername());
         }
         if (userEditDto.getPassword() != null && !userEditDto.getPassword().isEmpty()) {
-            user.setPassword(PasswordEncoderUtil.getPasswordEncoder()
+            userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder()
                     .encode(userEditDto.getPassword())
             );
         }
 
-        return userMapper.toDto(save(user));
+        return userMapper.toDto(save(userToUpdate));
     }
 
     @Override

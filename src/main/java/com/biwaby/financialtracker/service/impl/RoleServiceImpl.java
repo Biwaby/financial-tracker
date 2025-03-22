@@ -25,7 +25,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Role add(Role role) {
+    public Role create(Role role) {
         return save(role);
     }
 
@@ -56,15 +56,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     @Transactional
-    public Role edit(Long id, Role role) {
-        Role roleToEdit = getById(id);
-        roleToEdit.setName(role.getName());
-        return save(roleToEdit);
+    public Role update(Long id, Role role) {
+        Role roleToUpdate = getById(id);
+        roleToUpdate.setName(role.getName());
+        return save(roleToUpdate);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         Role roleToDelete = getById(id);
         roleRepository.delete(roleToDelete);
     }

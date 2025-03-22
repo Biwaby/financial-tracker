@@ -1,7 +1,7 @@
 package com.biwaby.financialtracker.controller.user;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.UserEditDto;
+import com.biwaby.financialtracker.dto.UserUpdateDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
@@ -32,7 +32,7 @@ public class UserController {
 
     @PatchMapping("/edit-self")
     public ResponseEntity<EditResponse> editSelf(
-            @RequestBody @Valid UserEditDto userEditDto
+            @RequestBody @Valid UserUpdateDto userEditDto
     ) {
         UserDto editUser = userService.getSelf();
         UserDto beforeEditUser = new UserDto(
@@ -42,7 +42,7 @@ public class UserController {
                 editUser.getRegisteredAt()
         );
         String responseText = "User with username <%s> has been successfully edited".formatted(editUser.getUsername());
-        UserDto afterEditUser = userService.editSelf(userEditDto);
+        UserDto afterEditUser = userService.updateSelf(userEditDto);
         EditResponse response = new EditResponse(
                 responseText,
                 HttpStatus.OK.toString(),

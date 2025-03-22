@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 public class CurrencyUpdateDto {
 
     @Size(min = 3, max = 3, message = "The currency code must contain 3 characters")
-    String code;
+    private String code;
 
     @Size(min = 3, max = 100, message = "The currency name must contain from 3 to 100 characters")
-    String name;
+    private String name;
 }

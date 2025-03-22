@@ -8,9 +8,9 @@ import java.util.List;
 public interface CurrencyService {
 
     Currency save(Currency currency);
-    Currency add(Currency currency);
+    Currency create(Currency currency);
     Currency getById(Long id);
     List<Currency> getAll();
-    Currency edit(Long id, CurrencyUpdateDto dto);
-    void delete(Long id);
+    Currency update(Long id, CurrencyUpdateDto dto);
+    void deleteById(Long id);
 }

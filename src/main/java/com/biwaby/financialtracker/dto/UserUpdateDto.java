@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserEditDto {
+public class UserUpdateDto {
 
     @Pattern(
             regexp = "^[A-Za-z]{5,20}$",

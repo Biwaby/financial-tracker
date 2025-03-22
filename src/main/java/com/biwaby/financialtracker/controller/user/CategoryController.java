@@ -22,7 +22,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping("/add")
+    @PostMapping("/create")
     public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Category category
     ) {
@@ -85,7 +85,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> delete(
+    public ResponseEntity<DeleteResponse> deleteById(
             @RequestParam Long id
     ) {
         Category deleted = categoryService.getById(id);

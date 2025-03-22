@@ -22,14 +22,14 @@ public class CurrencyController {
 
     private final CurrencyService currencyService;
 
-    @PostMapping("/add")
-    public ResponseEntity<ObjectResponse> add(
+    @PostMapping("/create")
+    public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Currency currency
     ) {
         ObjectResponse response = new ObjectResponse(
                 "Currency added successfully",
                 HttpStatus.OK.toString(),
-                currencyService.add(currency)
+                currencyService.create(currency)
         );
         return ResponseEntity.ok(response);
     }
@@ -69,7 +69,7 @@ public class CurrencyController {
                 toEdit.getCode(),
                 toEdit.getName()
         );
-        Currency edited = currencyService.edit(id, dto);
+        Currency edited = currencyService.update(id, dto);
         EditResponse response = new EditResponse(
                 "Currency with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -84,7 +84,7 @@ public class CurrencyController {
             @RequestParam Long id
     ) {
         Currency deleted = currencyService.getById(id);
-        currencyService.delete(id);
+        currencyService.deleteById(id);
         DeleteResponse response = new DeleteResponse(
                 "Currency with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
