@@ -103,11 +103,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     request,
                     response,
                     null,
-                    new ResponseException(
-                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "Unexpected error JWT processing request: %s".formatted(e.getMessage()),
-                            e.getClass().getName()
-                    )
+                    e
             );
         }
     }

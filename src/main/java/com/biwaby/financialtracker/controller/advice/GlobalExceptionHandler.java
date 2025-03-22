@@ -2,10 +2,13 @@ package com.biwaby.financialtracker.controller.advice;
 
 import com.biwaby.financialtracker.dto.response.ErrorResponse;
 import com.biwaby.financialtracker.exception.ResponseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -17,10 +20,34 @@ import java.util.stream.Collectors;
 
 @Component
 @ControllerAdvice
-public class ExceptionsHandler {
+public class GlobalExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    private Throwable getRootCauseMessage(Throwable throwable) {
+        Throwable cause = throwable.getCause();
+        if (cause != null) {
+            return getRootCauseMessage(cause);
+        }
+        return throwable;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        Throwable cause = getRootCauseMessage(e);
+        logger.error("Unhandled exception occurred: {}", cause.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ErrorResponse(
+                        cause.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                        cause.getClass().getName()
+                )
+        );
+    }
 
     @ExceptionHandler(ResponseException.class)
     public ResponseEntity<ErrorResponse> handleException(ResponseException e) {
+        logger.error("Response error: {}", e.getMessage(), e);
         return ResponseEntity.status(e.getStatusCode()).body(
                 new ErrorResponse(
                         e.getMessage(),
@@ -37,6 +64,7 @@ public class ExceptionsHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(" "));
+        logger.error("Validation errors: {}", errorMessages, e);
         return ResponseEntity.status(e.getStatusCode()).body(
                 new ErrorResponse(
                         errorMessages,
@@ -46,19 +74,22 @@ public class ExceptionsHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException e) {
+        Throwable cause = getRootCauseMessage(e);
+        logger.error("HttpMessageNotReadableException occurred: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 new ErrorResponse(
-                        e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.toString(),
-                        e.getClass().getName()
+                        cause.getMessage(),
+                        HttpStatus.BAD_REQUEST.toString(),
+                        cause.getClass().getName()
                 )
         );
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleException(BadCredentialsException e) {
+        logger.error("Bad credentials exception occurred: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                 new ErrorResponse(
                         "Incorrect password entered",
