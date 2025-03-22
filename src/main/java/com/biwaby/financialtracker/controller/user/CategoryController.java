@@ -1,28 +1,35 @@
 package com.biwaby.financialtracker.controller.user;
 
+import com.biwaby.financialtracker.dto.CategoryUpdateDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Category;
+import com.biwaby.financialtracker.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
+    private final CategoryService categoryService;
+
     @PostMapping("/add")
-    public ResponseEntity<ObjectResponse> add(
-            @RequestBody Category category
+    public ResponseEntity<ObjectResponse> create(
+            @RequestBody @Valid Category category
     ) {
         ObjectResponse response = new ObjectResponse(
                 "Category added successfully",
                 HttpStatus.OK.toString(),
-                null
+                categoryService.create(category)
         );
         return ResponseEntity.ok(response);
     }
@@ -32,9 +39,9 @@ public class CategoryController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Category with id %s".formatted(id),
+                "Category with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                categoryService.getById(id)
         );
         return ResponseEntity.ok(response);
     }
@@ -47,21 +54,32 @@ public class CategoryController {
         ObjectListResponse response = new ObjectListResponse(
                 "Categories list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
-                null
+                categoryService.getAll(pageSize, pageNumber).stream()
+                        .map(category -> (Object) category)
+                        .collect(Collectors.toList())
         );
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/edit")
+    @PatchMapping("/edit")
     public ResponseEntity<EditResponse> edit(
             @RequestParam Long id,
-            @RequestBody Category category
+            @RequestBody @Valid CategoryUpdateDto dto
     ) {
+        Category toEdit = categoryService.getById(id);
+        Category oldCategory = new Category(
+                toEdit.getId(),
+                toEdit.getUser(),
+                toEdit.getName(),
+                toEdit.getType(),
+                toEdit.getDescription()
+        );
+        Category edited = categoryService.update(id, dto);
         EditResponse response = new EditResponse(
-                "Category with id %s has been successfully edited".formatted(id),
+                "Category with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null,
-                null
+                oldCategory,
+                edited
         );
         return ResponseEntity.ok(response);
     }
@@ -70,10 +88,12 @@ public class CategoryController {
     public ResponseEntity<DeleteResponse> delete(
             @RequestParam Long id
     ) {
+        Category deleted = categoryService.getById(id);
+        categoryService.deleteById(id);
         DeleteResponse response = new DeleteResponse(
-                "Category with id %s has been successfully deleted".formatted(id),
+                "Category with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                deleted
         );
         return ResponseEntity.ok(response);
     }

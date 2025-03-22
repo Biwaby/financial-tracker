@@ -43,8 +43,9 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/user/**").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/user/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/v1/categories/**").hasAnyAuthority("ADMIN", "USER")
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(getAuthenticationProvider())
