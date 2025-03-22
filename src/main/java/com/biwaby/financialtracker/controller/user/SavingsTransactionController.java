@@ -30,7 +30,7 @@ public class SavingsTransactionController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Savings transaction with id %s".formatted(id),
+                "Savings transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
@@ -56,7 +56,7 @@ public class SavingsTransactionController {
             @RequestBody SavingsTransaction savingsTransaction
     ) {
         EditResponse response = new EditResponse(
-                "Savings transaction with id %s has been successfully edited".formatted(id),
+                "Savings transaction with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null,
                 null
@@ -69,7 +69,7 @@ public class SavingsTransactionController {
             @RequestParam Long id
     ) {
         DeleteResponse response = new DeleteResponse(
-                "Savings transaction with id %s has been successfully deleted".formatted(id),
+                "Savings transaction with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );

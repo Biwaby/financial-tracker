@@ -32,7 +32,7 @@ public class LimitController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Limit with id %s".formatted(id),
+                "Limit with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
@@ -55,7 +55,7 @@ public class LimitController {
             @RequestBody Limit limit
     ) {
         EditResponse response = new EditResponse(
-                "Limit with id %s has been successfully edited".formatted(id),
+                "Limit with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null,
                 null
@@ -68,7 +68,7 @@ public class LimitController {
             @RequestParam Long id
     ) {
         DeleteResponse response = new DeleteResponse(
-                "Limit with id %s has been successfully deleted".formatted(id),
+                "Limit with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );

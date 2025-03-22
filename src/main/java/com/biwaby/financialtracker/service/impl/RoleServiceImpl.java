@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findById(id).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "Role with id %s is not found".formatted(id)
+                        "Role with id <%s> is not found".formatted(id)
                 )
         );
     }
@@ -44,7 +44,7 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findByName(authority).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "Role with authority %s is not found".formatted(authority)
+                        "Role with authority <%s> is not found".formatted(authority)
                 )
         );
     }

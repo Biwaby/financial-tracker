@@ -38,7 +38,7 @@ public class RoleController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Role with id %s".formatted(id),
+                "Role with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 roleService.getById(id)
         );
@@ -69,7 +69,7 @@ public class RoleController {
         );
         Role edited = roleService.edit(id, role);
         EditResponse response = new EditResponse(
-                "Role with id %s has been successfully edited".formatted(id),
+                "Role with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 oldRole,
                 edited
@@ -84,7 +84,7 @@ public class RoleController {
         Role deleted = roleService.getById(id);
         roleService.delete(id);
         DeleteResponse response = new DeleteResponse(
-                "Role with id %s has been successfully deleted".formatted(id),
+                "Role with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deleted
         );

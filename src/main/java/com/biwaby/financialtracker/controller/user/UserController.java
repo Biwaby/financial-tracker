@@ -23,7 +23,7 @@ public class UserController {
     public ResponseEntity<ObjectResponse> getSelf() {
         UserDto userDto = userService.getSelf();
         ObjectResponse response = new ObjectResponse(
-                "User with username %s".formatted(userDto.getUsername()),
+                "User with username <%s>".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
                 userDto
         );
@@ -41,7 +41,7 @@ public class UserController {
                 editUser.getRoleName(),
                 editUser.getRegisteredAt()
         );
-        String responseText = "User with username %s has been successfully edited".formatted(editUser.getUsername());
+        String responseText = "User with username <%s> has been successfully edited".formatted(editUser.getUsername());
         UserDto afterEditUser = userService.editSelf(userEditDto);
         EditResponse response = new EditResponse(
                 responseText,
@@ -57,7 +57,7 @@ public class UserController {
         UserDto userDto = userService.getSelf();
         userService.deleteSelf();
         DeleteResponse response = new DeleteResponse(
-                "User with username %s has been successfully deleted".formatted(userDto.getUsername()),
+                "User with username <%s> has been successfully deleted".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
                 null
         );

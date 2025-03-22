@@ -25,7 +25,7 @@ public class AdminController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "User with id %s".formatted(id),
+                "User with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 userService.getById(id)
         );
@@ -37,7 +37,7 @@ public class AdminController {
             @RequestParam String username
     ) {
         ObjectResponse response = new ObjectResponse(
-                "User with username %s".formatted(username),
+                "User with username <%s>".formatted(username),
                 HttpStatus.OK.toString(),
                 userService.getByUsername(username)
         );
@@ -66,7 +66,7 @@ public class AdminController {
         UserDto deleted = userService.getById(id);
         userService.deleteById(id);
         DeleteResponse response = new DeleteResponse(
-                "User with id %s has been successfully deleted".formatted(id),
+                "User with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deleted
         );
@@ -80,7 +80,7 @@ public class AdminController {
         UserDto deleted = userService.getByUsername(username);
         userService.deleteByUsername(username);
         DeleteResponse response = new DeleteResponse(
-                "User with username %s has been successfully deleted".formatted(username),
+                "User with username <%s> has been successfully deleted".formatted(username),
                 HttpStatus.OK.toString(),
                 deleted
         );

@@ -30,7 +30,7 @@ public class SavingsAccountController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Savings account with id %s".formatted(id),
+                "Savings account with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
@@ -53,7 +53,7 @@ public class SavingsAccountController {
             @RequestBody SavingsAccount savingsAccount
     ) {
         EditResponse response = new EditResponse(
-                "Savings account with id %s has been successfully edited".formatted(id),
+                "Savings account with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null,
                 null
@@ -66,7 +66,7 @@ public class SavingsAccountController {
             @RequestParam Long id
     ) {
         DeleteResponse response = new DeleteResponse(
-                "Savings account with id %s has been successfully deleted".formatted(id),
+                "Savings account with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );

@@ -34,7 +34,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         return currencyRepository.findById(id).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "Currency with id %s is not found".formatted(id)
+                        "Currency with id <%s> is not found".formatted(id)
                 )
         );
     }

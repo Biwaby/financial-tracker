@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
-                    "User with username %s already exists".formatted(user.getUsername())
+                    "User with username <%s> already exists".formatted(user.getUsername())
             );
         }
         return save(user);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.findById(id).orElseThrow(
                         () -> new ResponseException(
                                 HttpStatus.NOT_FOUND.value(),
-                                "User with id %s is not found".formatted(id)
+                                "User with id <%s> is not found".formatted(id)
                         )
                 )
         );
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 userRepository.findByUsername(username).orElseThrow(
                         () -> new ResponseException(
                                 HttpStatus.NOT_FOUND.value(),
-                                "User with username %s is not found".formatted(username)
+                                "User with username <%s> is not found".formatted(username)
                         )
                 )
         );
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "User with username %s is not found".formatted(username)
+                        "User with username <%s> is not found".formatted(username)
                 )
         );
     }
@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService {
         User userToDelete = userRepository.findById(id).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "User with id %s is not found".formatted(id)
+                        "User with id <%s> is not found".formatted(id)
                 )
         );
         userRepository.delete(userToDelete);
@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         User userToDelete = userRepository.findByUsername(username).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
-                        "User with username %s is not found".formatted(username)
+                        "User with username <%s> is not found".formatted(username)
                 )
         );
         userRepository.delete(userToDelete);

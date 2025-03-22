@@ -32,7 +32,7 @@ public class WalletTransactionController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Wallet transaction with id %s".formatted(id),
+                "Wallet transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
@@ -58,7 +58,7 @@ public class WalletTransactionController {
             @RequestBody WalletTransaction walletTransaction
     ) {
         EditResponse response = new EditResponse(
-                "Wallet transaction with id %s has been successfully edited".formatted(id),
+                "Wallet transaction with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null,
                 null
@@ -71,7 +71,7 @@ public class WalletTransactionController {
             @RequestParam Long id
     ) {
         DeleteResponse response = new DeleteResponse(
-                "Wallet transaction with id %s has been successfully deleted".formatted(id),
+                "Wallet transaction with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );

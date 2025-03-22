@@ -33,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
-                    "User with username %s already exists".formatted(request.getUsername())
+                    "User with username <%s> already exists".formatted(request.getUsername())
             );
         } else {
             User user = new User();
@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } else {
             throw new ResponseException(
                     HttpStatus.NOT_FOUND.value(),
-                    "User with username %s does not exist".formatted(request.getUsername())
+                    "User with username <%s> does not exist".formatted(request.getUsername())
             );
         }
     }

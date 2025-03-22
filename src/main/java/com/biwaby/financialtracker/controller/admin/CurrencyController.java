@@ -37,7 +37,7 @@ public class CurrencyController {
             @RequestParam Long id
     ) {
         ObjectResponse response = new ObjectResponse(
-                "Currency with id %s".formatted(id),
+                "Currency with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 currencyService.getById(id)
         );
@@ -69,7 +69,7 @@ public class CurrencyController {
         );
         Currency edited = currencyService.edit(id, currency);
         EditResponse response = new EditResponse(
-                "Currency with id %s has been successfully edited".formatted(id),
+                "Currency with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 oldCurrency,
                 edited
@@ -84,7 +84,7 @@ public class CurrencyController {
         Currency deleted = currencyService.getById(id);
         currencyService.delete(id);
         DeleteResponse response = new DeleteResponse(
-                "Currency with id %s has been successfully deleted".formatted(id),
+                "Currency with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deleted
         );

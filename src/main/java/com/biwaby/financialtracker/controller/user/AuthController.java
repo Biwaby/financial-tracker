@@ -24,7 +24,7 @@ public class AuthController {
             @RequestBody @Valid AuthRequest request
     ) {
         ObjectResponse response = new ObjectResponse(
-                "User with username %s registered successfully".formatted(request.getUsername()),
+                "User with username <%s> registered successfully".formatted(request.getUsername()),
                 HttpStatus.OK.toString(),
                 authenticationService.signUp(request)
         );
