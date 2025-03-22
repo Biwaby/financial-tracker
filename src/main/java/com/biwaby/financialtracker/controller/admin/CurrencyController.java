@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.controller.admin;
 
-import com.biwaby.financialtracker.dto.CurrencyUpdateDto;
+import com.biwaby.financialtracker.dto.update.CurrencyUpdateDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;

@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.service;
 
-import com.biwaby.financialtracker.dto.CategoryUpdateDto;
+import com.biwaby.financialtracker.dto.update.CategoryUpdateDto;
 import com.biwaby.financialtracker.entity.Category;
 
 import java.util.List;

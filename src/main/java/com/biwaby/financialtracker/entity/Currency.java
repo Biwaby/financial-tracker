@@ -23,13 +23,13 @@ public class Currency {
     @Column(name = "id")
     private Long id;
 
-    @Size(min = 3, max = 3, message = "The currency code must contain 3 characters")
-    @NotBlank(message = "The currency code must not be empty")
+    @Size(min = 3, max = 3, message = "The currency code must contain 3 characters.")
+    @NotBlank(message = "The currency code must not be empty.")
     @Column(name = "code", nullable = false, length = 3)
     private String code;
 
-    @Size(min = 3, max = 100, message = "The currency name must contain from 3 to 100 characters")
-    @NotBlank(message = "The currency name must not be empty")
+    @Size(min = 3, max = 100, message = "The currency name must contain from 3 to 100 characters.")
+    @NotBlank(message = "The currency name must not be empty.")
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 

@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.service.impl;
 
-import com.biwaby.financialtracker.dto.CategoryUpdateDto;
+import com.biwaby.financialtracker.dto.update.CategoryUpdateDto;
 import com.biwaby.financialtracker.entity.Category;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.enums.CategoryType;

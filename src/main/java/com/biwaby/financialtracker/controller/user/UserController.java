@@ -1,7 +1,7 @@
 package com.biwaby.financialtracker.controller.user;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.UserUpdateDto;
+import com.biwaby.financialtracker.dto.update.UserUpdateDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;

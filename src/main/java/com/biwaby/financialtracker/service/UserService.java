@@ -1,7 +1,7 @@
 package com.biwaby.financialtracker.service;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.UserUpdateDto;
+import com.biwaby.financialtracker.dto.update.UserUpdateDto;
 import com.biwaby.financialtracker.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

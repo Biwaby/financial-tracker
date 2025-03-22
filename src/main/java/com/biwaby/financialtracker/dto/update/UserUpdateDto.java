@@ -1,4 +1,4 @@
-package com.biwaby.financialtracker.dto;
+package com.biwaby.financialtracker.dto.update;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
