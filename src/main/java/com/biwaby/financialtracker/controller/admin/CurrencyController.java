@@ -1,11 +1,13 @@
 package com.biwaby.financialtracker.controller.admin;
 
+import com.biwaby.financialtracker.dto.CurrencyUpdateDto;
 import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Currency;
 import com.biwaby.financialtracker.service.CurrencyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class CurrencyController {
 
     @PostMapping("/add")
     public ResponseEntity<ObjectResponse> add(
-            @RequestBody Currency currency
+            @RequestBody @Valid Currency currency
     ) {
         ObjectResponse response = new ObjectResponse(
                 "Currency added successfully",
@@ -56,10 +58,10 @@ public class CurrencyController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/edit")
+    @PatchMapping("/edit")
     public ResponseEntity<EditResponse> editById(
             @RequestParam Long id,
-            @RequestBody Currency currency
+            @RequestBody @Valid CurrencyUpdateDto dto
     ) {
         Currency toEdit = currencyService.getById(id);
         Currency oldCurrency = new Currency(
@@ -67,7 +69,7 @@ public class CurrencyController {
                 toEdit.getCode(),
                 toEdit.getName()
         );
-        Currency edited = currencyService.edit(id, currency);
+        Currency edited = currencyService.edit(id, dto);
         EditResponse response = new EditResponse(
                 "Currency with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),

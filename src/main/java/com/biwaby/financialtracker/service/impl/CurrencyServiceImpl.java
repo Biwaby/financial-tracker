@@ -1,5 +1,6 @@
 package com.biwaby.financialtracker.service.impl;
 
+import com.biwaby.financialtracker.dto.CurrencyUpdateDto;
 import com.biwaby.financialtracker.entity.Currency;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.CurrencyRepository;
@@ -26,6 +27,21 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     @Transactional
     public Currency add(Currency currency) {
+        String currencyCode = currency.getCode().toUpperCase();
+        currency.setCode(currencyCode);
+
+        if (currencyRepository.existsByCode(currency.getCode())) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Currency with code <%s> already exists".formatted(currency.getCode())
+            );
+        }
+        if (currencyRepository.existsByName(currency.getName())) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Currency with name <%s> already exists".formatted(currency.getName())
+            );
+        }
         return save(currency);
     }
 
@@ -46,10 +62,30 @@ public class CurrencyServiceImpl implements CurrencyService {
 
     @Override
     @Transactional
-    public Currency edit(Long id, Currency currency) {
+    public Currency edit(Long id, CurrencyUpdateDto dto) {
         Currency currencyToEdit = getById(id);
-        currencyToEdit.setCode(currency.getCode());
-        currencyToEdit.setName(currency.getName());
+
+        if (dto.getCode() != null && !dto.getCode().isEmpty()) {
+            String currencyCode = dto.getCode().toUpperCase();
+            dto.setCode(currencyCode);
+
+            if (currencyRepository.existsByCode(currencyCode)) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with code <%s> already exists".formatted(dto.getCode())
+                );
+            }
+            currencyToEdit.setCode(dto.getCode());
+        }
+        if (dto.getName() != null && !dto.getName().isEmpty()) {
+            if (currencyRepository.existsByName(dto.getName())) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with name <%s> already exists".formatted(dto.getName())
+                );
+            }
+            currencyToEdit.setName(dto.getName());
+        }
         return save(currencyToEdit);
     }
 
