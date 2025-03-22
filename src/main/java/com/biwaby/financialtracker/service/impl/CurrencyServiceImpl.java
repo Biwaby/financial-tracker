@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.service.impl;
 
-import com.biwaby.financialtracker.dto.CurrencyUpdateDto;
+import com.biwaby.financialtracker.dto.update.CurrencyUpdateDto;
 import com.biwaby.financialtracker.entity.Currency;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.CurrencyRepository;
@@ -51,6 +51,16 @@ public class CurrencyServiceImpl implements CurrencyService {
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
                         "Currency with id <%s> is not found".formatted(id)
+                )
+        );
+    }
+
+    @Override
+    public Currency getByCode(String code) {
+        return currencyRepository.findByCode(code).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Currency with code <%s> is not found".formatted(code)
                 )
         );
     }
