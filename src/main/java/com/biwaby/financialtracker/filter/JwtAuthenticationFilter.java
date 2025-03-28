@@ -9,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,20 +28,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String HEADER_NAME = "Authorization";
 
-    @Autowired
     private final JwtService jwtService;
-
-    @Autowired
     private final UserService userService;
 
-    @Autowired
     @Qualifier("handlerExceptionResolver")
     private final HandlerExceptionResolver resolver;
 
     public JwtAuthenticationFilter(
-            JwtService jwtService,
-            UserService userService,
-            @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver
+            final JwtService jwtService,
+            final UserService userService,
+            @Qualifier("handlerExceptionResolver") final HandlerExceptionResolver resolver
     ) {
         this.jwtService = jwtService;
         this.userService = userService;

@@ -31,6 +31,10 @@ public class SavingsAccount {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "currency_id", referencedColumnName = "id", nullable = false)
+    private Currency currency;
+
     @Column(
             name = "target_amount",
             nullable = false,

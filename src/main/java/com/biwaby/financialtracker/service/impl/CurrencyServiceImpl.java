@@ -75,7 +75,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     public Currency update(Long id, CurrencyUpdateDto dto) {
         Currency currencyToUpdate = getById(id);
 
-        if (dto.getCode() != null && !dto.getCode().isEmpty()) {
+        if (dto.getCode() != null && !dto.getCode().trim().isEmpty()) {
             String currencyCode = dto.getCode().toUpperCase();
             dto.setCode(currencyCode);
 
@@ -87,7 +87,7 @@ public class CurrencyServiceImpl implements CurrencyService {
             }
             currencyToUpdate.setCode(dto.getCode());
         }
-        if (dto.getName() != null && !dto.getName().isEmpty()) {
+        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
             if (currencyRepository.existsByName(dto.getName())) {
                 throw new ResponseException(
                         HttpStatus.BAD_REQUEST.value(),

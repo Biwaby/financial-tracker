@@ -35,11 +35,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         Throwable cause = getRootCauseMessage(e);
+        HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
+
         logger.error("Unhandled exception occurred: {}", cause.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+        return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         cause.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                        status.toString(),
                         cause.getClass().getName()
                 )
         );
@@ -47,11 +49,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseException.class)
     public ResponseEntity<ErrorResponse> handleException(ResponseException e) {
+        HttpStatusCode status = HttpStatusCode.valueOf(e.getStatusCode());
         logger.error("Response error: {}", e.getMessage(), e);
-        return ResponseEntity.status(e.getStatusCode()).body(
+        return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         e.getMessage(),
-                        HttpStatusCode.valueOf(e.getStatusCode()).toString(),
+                        status.toString(),
                         e.getExceptionClassName()
                 )
         );
@@ -64,11 +67,12 @@ public class GlobalExceptionHandler {
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(" "));
+        HttpStatusCode status = e.getStatusCode();
         logger.error("Validation errors: {}", errorMessages, e);
-        return ResponseEntity.status(e.getStatusCode()).body(
+        return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         errorMessages,
-                        e.getStatusCode().toString(),
+                        status.toString(),
                         e.getClass().getName()
                 )
         );
@@ -77,11 +81,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException e) {
         Throwable cause = getRootCauseMessage(e);
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
         logger.error("HttpMessageNotReadableException occurred: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         cause.getMessage(),
-                        HttpStatus.BAD_REQUEST.toString(),
+                        status.toString(),
                         cause.getClass().getName()
                 )
         );
@@ -90,10 +95,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleException(BadCredentialsException e) {
         logger.error("Bad credentials exception occurred: {}", e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+        HttpStatusCode status = HttpStatus.UNAUTHORIZED;
+        return ResponseEntity.status(status).body(
                 new ErrorResponse(
                         "Incorrect password entered",
-                        HttpStatus.UNAUTHORIZED.toString(),
+                        status.toString(),
                         e.getClass().getName()
                 )
         );
