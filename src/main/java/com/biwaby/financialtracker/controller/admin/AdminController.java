@@ -1,7 +1,6 @@
 package com.biwaby.financialtracker.controller.admin;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
@@ -60,29 +59,29 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/delete-by-id")
-    public ResponseEntity<DeleteResponse> deleteUserById(
+    public ResponseEntity<ObjectResponse> deleteUserById(
             @RequestParam Long id
     ) {
-        UserDto deleted = userService.getById(id);
+        UserDto deletedUser = userService.getById(id);
         userService.deleteById(id);
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "User with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                deleted
+                deletedUser
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/users/delete-by-username")
-    public ResponseEntity<DeleteResponse> deleteUserByUsername(
+    public ResponseEntity<ObjectResponse> deleteUserByUsername(
             @RequestParam String username
     ) {
-        UserDto deleted = userService.getByUsername(username);
+        UserDto deletedUser = userService.getByUsername(username);
         userService.deleteByUsername(username);
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(username),
                 HttpStatus.OK.toString(),
-                deleted
+                deletedUser
         );
         return ResponseEntity.ok(response);
     }

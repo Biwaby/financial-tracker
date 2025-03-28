@@ -1,7 +1,5 @@
 package com.biwaby.financialtracker.controller.admin;
 
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Role;
@@ -57,36 +55,29 @@ public class RoleController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<EditResponse> editById(
+    @PutMapping("/update")
+    public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
             @Valid @RequestBody Role role
     ) {
-        Role toEdit = roleService.getById(id);
-        Role oldRole = new Role(
-                toEdit.getId(),
-                toEdit.getName()
-        );
-        Role edited = roleService.update(id, role);
-        EditResponse response = new EditResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Role with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                oldRole,
-                edited
+                roleService.update(id, role)
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> deleteById(
+    public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        Role deleted = roleService.getById(id);
+        Role deletedRole = roleService.getById(id);
         roleService.deleteById(id);
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Role with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                deleted
+                deletedRole
         );
         return ResponseEntity.ok(response);
     }

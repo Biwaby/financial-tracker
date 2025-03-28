@@ -1,7 +1,5 @@
 package com.biwaby.financialtracker.controller.user;
 
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.SavingsTransaction;
@@ -50,25 +48,24 @@ public class SavingsTransactionController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<EditResponse> edit(
+    @PutMapping("/update")
+    public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
             @RequestBody SavingsTransaction savingsTransaction
     ) {
-        EditResponse response = new EditResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Savings transaction with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null,
                 null
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> delete(
+    public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Savings transaction with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null

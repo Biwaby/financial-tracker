@@ -1,8 +1,6 @@
 package com.biwaby.financialtracker.controller.admin;
 
 import com.biwaby.financialtracker.dto.update.CurrencyUpdateDto;
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Currency;
@@ -58,37 +56,29 @@ public class CurrencyController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<EditResponse> editById(
+    @PatchMapping("/update")
+    public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
             @RequestBody @Valid CurrencyUpdateDto dto
     ) {
-        Currency toEdit = currencyService.getById(id);
-        Currency oldCurrency = new Currency(
-                toEdit.getId(),
-                toEdit.getCode(),
-                toEdit.getName()
-        );
-        Currency edited = currencyService.update(id, dto);
-        EditResponse response = new EditResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Currency with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                oldCurrency,
-                edited
+                currencyService.update(id, dto)
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> deleteById(
+    public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        Currency deleted = currencyService.getById(id);
+        Currency deletedCurrency = currencyService.getById(id);
         currencyService.deleteById(id);
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Currency with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                deleted
+                deletedCurrency
         );
         return ResponseEntity.ok(response);
     }

@@ -1,8 +1,6 @@
 package com.biwaby.financialtracker.controller.user;
 
 import com.biwaby.financialtracker.dto.update.CategoryUpdateDto;
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Category;
@@ -61,39 +59,29 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/edit")
-    public ResponseEntity<EditResponse> edit(
+    @PatchMapping("/update")
+    public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
             @RequestBody @Valid CategoryUpdateDto dto
     ) {
-        Category toEdit = categoryService.getById(id);
-        Category oldCategory = new Category(
-                toEdit.getId(),
-                toEdit.getUser(),
-                toEdit.getName(),
-                toEdit.getType(),
-                toEdit.getDescription()
-        );
-        Category edited = categoryService.update(id, dto);
-        EditResponse response = new EditResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Category with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                oldCategory,
-                edited
+                categoryService.update(id, dto)
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> deleteById(
+    public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        Category deleted = categoryService.getById(id);
+        Category deletedCategory = categoryService.getById(id);
         categoryService.deleteById(id);
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "Category with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                deleted
+                deletedCategory
         );
         return ResponseEntity.ok(response);
     }
