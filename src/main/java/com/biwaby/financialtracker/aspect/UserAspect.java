@@ -18,17 +18,26 @@ public class UserAspect {
     private final CategoryService categoryService;
 
     @Pointcut("execution(public * com.biwaby.financialtracker.service.impl.UserServiceImpl.create(..))")
-    public void userCreationServicePointcut() {}
+    public void userCreationPointcut() {}
 
-    @AfterReturning(pointcut = "userCreationServicePointcut()", returning = "user")
+    @AfterReturning(pointcut = "userCreationPointcut()", returning = "user")
     public void afterUserCreation(User user) {
-        Category category = new Category(
+        Category commonCategory = new Category(
                 null,
                 user,
                 "Common",
-                CategoryType.BOTH,
-                "This category accumulates all types of transactions, including both income and expense, providing a single place for accounting. It is protected from deletion to keep your financial records up to date."
+                CategoryType.COMMON,
+                "This category accumulates all types of transactions, including both income and expense. It is protected from modification/deletion."
         );
-        categoryService.save(category);
+        categoryService.save(commonCategory);
+
+        Category otherCategory = new Category(
+                null,
+                user,
+                "Service",
+                CategoryType.SERVICE,
+                "This category refers to operations that are not related to financial operations. It is protected from modification/deletion."
+        );
+        categoryService.save(otherCategory);
     }
 }
