@@ -1,7 +1,6 @@
 package com.biwaby.financialtracker.service;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.update.UserUpdateDto;
 import com.biwaby.financialtracker.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -17,7 +16,8 @@ public interface UserService {
     User getCurrentUserEntity();
     UserDto getSelf();
     List<UserDto> getAll(Integer pageSize, Integer pageNumber);
-    UserDto updateSelf(UserUpdateDto userEditDto);
+    UserDto updateUsername(String username);
+    UserDto updatePassword(String password);
     void deleteById(Long id);
     void deleteByUsername(String username);
     void deleteSelf();

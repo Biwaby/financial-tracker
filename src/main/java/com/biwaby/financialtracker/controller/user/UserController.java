@@ -1,12 +1,9 @@
 package com.biwaby.financialtracker.controller.user;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.update.UserUpdateDto;
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,36 +27,48 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/edit-self")
-    public ResponseEntity<EditResponse> editSelf(
-            @RequestBody @Valid UserUpdateDto userEditDto
+    @PutMapping("/update-username")
+    public ResponseEntity<ObjectResponse> updateUsername(
+            @RequestParam
+            @Pattern(
+                    regexp = "^[A-Za-z]{5,20}$",
+                    message = "The username must contain only uppercase or lowercase Latin letters and must be between 5 and 20 characters long."
+            )
+            String username
     ) {
-        UserDto editUser = userService.getSelf();
-        UserDto beforeEditUser = new UserDto(
-                editUser.getId(),
-                editUser.getUsername(),
-                editUser.getRoleName(),
-                editUser.getRegisteredAt()
-        );
-        String responseText = "User with username <%s> has been successfully edited".formatted(editUser.getUsername());
-        UserDto afterEditUser = userService.updateSelf(userEditDto);
-        EditResponse response = new EditResponse(
-                responseText,
+        ObjectResponse response = new ObjectResponse(
+                "The username has been updated. You need to log in again.",
                 HttpStatus.OK.toString(),
-                beforeEditUser,
-                afterEditUser
+                userService.updateUsername(username)
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update-password")
+    public ResponseEntity<ObjectResponse> updatePassword(
+            @RequestParam
+            @Pattern(
+                    regexp = "^(?=(?:[^a-z]*[a-z]){3})(?=(?:[^A-Z]*[A-Z]){3})(?=(?:[^0-9]*[0-9]){2})[A-Za-z0-9]{8,40}$",
+                    message = "The password must contain at least 3 lowercase Latin letters, at least 3 uppercase Latin letters, at least 2 digits from 0 to 9 inclusive and must be between 8 and 40 characters long."
+            )
+            String password
+    ) {
+        ObjectResponse response = new ObjectResponse(
+                "The password has been updated. You need to log in again.",
+                HttpStatus.OK.toString(),
+                userService.updatePassword(password)
         );
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete-self")
-    public ResponseEntity<DeleteResponse> deleteSelf() {
+    public ResponseEntity<ObjectResponse> deleteSelf() {
         UserDto userDto = userService.getSelf();
         userService.deleteSelf();
-        DeleteResponse response = new DeleteResponse(
+        ObjectResponse response = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
-                null
+                userDto
         );
         return ResponseEntity.ok(response);
     }

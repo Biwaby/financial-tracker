@@ -1,7 +1,6 @@
 package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.dto.UserUpdateDto;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.mapper.UserMapper;
@@ -99,24 +98,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateSelf(UserUpdateDto userEditDto) {
+    public UserDto updateUsername(String username) {
         User userToUpdate = getCurrentUserEntity();
+        if (username != null && !username.trim().isEmpty()) {
+            userToUpdate.setUsername(username);
+        }
+        return userMapper.toDto(save(userToUpdate));
+    }
 
-        if (userEditDto.getUsername() == null && userEditDto.getPassword() == null) {
-            throw new ResponseException(
-                    HttpStatus.BAD_REQUEST.value(),
-                    "Either username or password are required"
-            );
+    @Override
+    @Transactional
+    public UserDto updatePassword(String password) {
+        User userToUpdate = getCurrentUserEntity();
+        if (password != null && !password.trim().isEmpty()) {
+            userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder().encode(password));
         }
-        if (userEditDto.getUsername() != null && !userEditDto.getUsername().isEmpty()) {
-            userToUpdate.setUsername(userEditDto.getUsername());
-        }
-        if (userEditDto.getPassword() != null && !userEditDto.getPassword().isEmpty()) {
-            userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder()
-                    .encode(userEditDto.getPassword())
-            );
-        }
-
         return userMapper.toDto(save(userToUpdate));
     }
 
