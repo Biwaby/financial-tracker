@@ -56,6 +56,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Category getByName(String name) {
+        User user = userService.getCurrentUserEntity();
+        return categoryRepository.findByNameAndUser(name, user).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Category with name <%s> is not found or not allowed".formatted(name)
+                )
+        );
+    }
+
+    @Override
     public List<Category> getAll(Integer pageSize, Integer pageNumber) {
         User user = userService.getCurrentUserEntity();
         return categoryRepository.findAllByUser(user, PageRequest.of(pageNumber, pageSize))
@@ -67,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public Category update(Long id, CategoryUpdateDto dto) {
         Category categoryToUpdate = getById(id);
-        if (categoryToUpdate.getName().equals("Common")) {
+        if (categoryToUpdate.getName().equals("Common") || categoryToUpdate.getName().equals("Service")) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Category with name <%s> cannot be updated".formatted(categoryToUpdate.getName())
@@ -75,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         User user = userService.getCurrentUserEntity();
-        if (dto.getName() != null && !dto.getName().isEmpty()) {
+        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
             if (!categoryRepository.existsByNameAndUser(dto.getName(), user)) {
                 categoryToUpdate.setName(dto.getName());
             } else {
@@ -85,8 +96,8 @@ public class CategoryServiceImpl implements CategoryService {
                 );
             }
         }
-        if (dto.getType() != null && !dto.getType().isEmpty()) {
-            categoryToUpdate.setType(CategoryType.getCategoryType(dto.getType()));
+        if (dto.getType() != null && !dto.getType().trim().isEmpty()) {
+            categoryToUpdate.setType(CategoryType.getTypeByValue(dto.getType()));
         }
         if (dto.getDescription() != null) {
             categoryToUpdate.setDescription(dto.getDescription());
@@ -97,13 +108,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        Category category = getById(id);
-        if (category.getName().equals("Common")) {
+        Category categoryToDelete = getById(id);
+        if (categoryToDelete.getName().equals("Common") || categoryToDelete.getName().equals("Service")) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
-                    "Category with name <%s> cannot be deleted".formatted(category.getName())
+                    "Category with name <%s> cannot be deleted".formatted(categoryToDelete.getName())
             );
         }
-        categoryRepository.delete(category);
+        categoryRepository.delete(categoryToDelete);
     }
 }
