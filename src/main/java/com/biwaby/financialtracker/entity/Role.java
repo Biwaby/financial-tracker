@@ -23,8 +23,8 @@ public class Role {
     @Column(name = "id")
     private Long id;
 
-    @Size(min = 3, max = 50, message = "The role name must contain from 3 to 50 characters")
-    @NotBlank(message = "The role name must not be empty")
+    @Size(min = 3, max = 50, message = "The <name> must contain from 3 to 50 characters")
+    @NotBlank(message = "The <name> must not be empty")
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 

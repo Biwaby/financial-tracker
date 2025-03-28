@@ -30,7 +30,7 @@ public class Category {
     private User user;
 
     @Size(min = 3, max = 255, message = "The <name> must be between 3 and 255 characters long.")
-    @NotEmpty(message = "The <name> must not be empty.")
+    @NotBlank(message = "The <name> must not be empty.")
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 

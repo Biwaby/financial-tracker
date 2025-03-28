@@ -1,11 +1,7 @@
 package com.biwaby.financialtracker.dto.response;
 
-import lombok.Value;
-
-@Value
-public class ErrorResponse {
-
-    String response;
-    String code;
-    String error;
-}
+public record ErrorResponse(
+        String response,
+        String code,
+        String error
+) { }
