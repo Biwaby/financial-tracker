@@ -26,6 +26,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public Role create(Role role) {
+        if (roleRepository.existsByName(role.getName().toUpperCase())) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Role with name <%s> already exists".formatted(role.getName())
+            );
+        }
+        role.setName(role.getName().toUpperCase());
         return save(role);
     }
 
@@ -58,7 +65,19 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public Role update(Long id, Role role) {
         Role roleToUpdate = getById(id);
-        roleToUpdate.setName(role.getName());
+        if (roleToUpdate.getName().equals("USER")) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Role with name <%s> cannot be updated".formatted(role.getName())
+            );
+        }
+        if (roleRepository.existsByName(role.getName().toUpperCase())) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Role with name <%s> already exists".formatted(role.getName())
+            );
+        }
+        roleToUpdate.setName(role.getName().toUpperCase());
         return save(roleToUpdate);
     }
 
@@ -66,6 +85,12 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteById(Long id) {
         Role roleToDelete = getById(id);
+        if (roleToDelete.getName().equals("USER")) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Role with name <%s> cannot be deleted".formatted(roleToDelete.getName())
+            );
+        }
         roleRepository.delete(roleToDelete);
     }
 }
