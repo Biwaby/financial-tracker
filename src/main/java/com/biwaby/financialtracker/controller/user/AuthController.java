@@ -23,23 +23,23 @@ public class AuthController {
     public ResponseEntity<ObjectResponse> signUp(
             @RequestBody @Valid AuthRequest request
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> registered successfully".formatted(request.getUsername()),
                 HttpStatus.OK.toString(),
                 authenticationService.signUp(request)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<ObjectResponse> signIn(
             @RequestBody @Valid AuthRequest request
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Welcome back, %s!".formatted(request.getUsername()),
                 HttpStatus.OK.toString(),
                 authenticationService.signIn(request)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

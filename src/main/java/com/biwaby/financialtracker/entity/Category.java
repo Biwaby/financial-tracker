@@ -39,10 +39,7 @@ public class Category {
     @Enumerated(EnumType.STRING)
     private CategoryType type;
 
-    @Column(
-            name = "description",
-            columnDefinition = "TEXT"
-    )
+    @Column(name = "description", columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Override

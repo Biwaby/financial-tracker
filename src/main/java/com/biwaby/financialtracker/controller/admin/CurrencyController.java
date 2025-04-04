@@ -24,36 +24,36 @@ public class CurrencyController {
     public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Currency currency
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Currency added successfully",
                 HttpStatus.OK.toString(),
                 currencyService.create(currency)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Currency with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 currencyService.getById(id)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Currencies list",
                 HttpStatus.OK.toString(),
                 currencyService.getAll().stream()
                         .map(currency -> (Object) currency)
                         .collect(Collectors.toList())
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PatchMapping("/update")
@@ -61,12 +61,12 @@ public class CurrencyController {
             @RequestParam Long id,
             @RequestBody @Valid CurrencyUpdateDto dto
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Currency with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 currencyService.update(id, dto)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
@@ -75,11 +75,11 @@ public class CurrencyController {
     ) {
         Currency deletedCurrency = currencyService.getById(id);
         currencyService.deleteById(id);
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Currency with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deletedCurrency
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

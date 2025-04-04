@@ -15,34 +15,34 @@ public class SavingsAccountController {
     public ResponseEntity<ObjectResponse> create(
             @RequestBody SavingsAccount savingsAccount
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings account created successfully",
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings account with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Savings accounts list",
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PutMapping("/update")
@@ -50,23 +50,23 @@ public class SavingsAccountController {
             @RequestParam Long id,
             @RequestBody SavingsAccount savingsAccount
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings account with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings account with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

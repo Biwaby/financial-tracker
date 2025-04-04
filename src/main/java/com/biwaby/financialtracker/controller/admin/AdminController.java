@@ -5,6 +5,7 @@ import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,24 +24,24 @@ public class AdminController {
     public ResponseEntity<ObjectResponse> getUserById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 userService.getById(id)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/users/get-by-username")
     public ResponseEntity<ObjectResponse> getUserByUsername(
             @RequestParam String username
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s>".formatted(username),
                 HttpStatus.OK.toString(),
                 userService.getByUsername(username)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/users/get-all")
@@ -48,14 +49,20 @@ public class AdminController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Users list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
                 userService.getAll(pageSize, pageNumber).stream()
                         .map(userDto -> (Object) userDto)
                         .collect(Collectors.toList())
         );
-        return ResponseEntity.ok(response);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("PageSize", String.valueOf(pageSize));
+        responseHeaders.add("PageNumber", String.valueOf(pageNumber));
+        return ResponseEntity
+                .ok()
+                .headers(responseHeaders)
+                .body(responseBody);
     }
 
     @DeleteMapping("/users/delete-by-id")
@@ -64,12 +71,12 @@ public class AdminController {
     ) {
         UserDto deletedUser = userService.getById(id);
         userService.deleteById(id);
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deletedUser
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/users/delete-by-username")
@@ -78,11 +85,11 @@ public class AdminController {
     ) {
         UserDto deletedUser = userService.getByUsername(username);
         userService.deleteByUsername(username);
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(username),
                 HttpStatus.OK.toString(),
                 deletedUser
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

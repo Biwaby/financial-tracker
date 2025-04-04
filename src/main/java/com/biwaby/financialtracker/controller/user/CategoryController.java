@@ -7,6 +7,7 @@ import com.biwaby.financialtracker.entity.Category;
 import com.biwaby.financialtracker.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,24 +25,24 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Category category
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Category added successfully",
                 HttpStatus.OK.toString(),
                 categoryService.create(category)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 categoryService.getById(id)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
@@ -49,14 +50,20 @@ public class CategoryController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Categories list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
                 categoryService.getAll(pageSize, pageNumber).stream()
                         .map(category -> (Object) category)
                         .collect(Collectors.toList())
         );
-        return ResponseEntity.ok(response);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("PageSize", String.valueOf(pageSize));
+        responseHeaders.add("PageNumber", String.valueOf(pageNumber));
+        return ResponseEntity
+                .ok()
+                .headers(responseHeaders)
+                .body(responseBody);
     }
 
     @PatchMapping("/update")
@@ -64,12 +71,12 @@ public class CategoryController {
             @RequestParam Long id,
             @RequestBody @Valid CategoryUpdateDto dto
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 categoryService.update(id, dto)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
@@ -78,11 +85,11 @@ public class CategoryController {
     ) {
         Category deletedCategory = categoryService.getById(id);
         categoryService.deleteById(id);
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deletedCategory
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

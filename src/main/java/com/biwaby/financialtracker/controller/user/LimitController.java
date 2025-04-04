@@ -17,34 +17,34 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> add(
             @RequestBody Limit limit
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Limit added successfully",
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Limits list",
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PutMapping("/update")
@@ -52,23 +52,23 @@ public class LimitController {
             @RequestParam Long id,
             @RequestBody Limit limit
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

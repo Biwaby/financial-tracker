@@ -27,7 +27,7 @@ public class UserAspect {
                 user,
                 "Common",
                 CategoryType.COMMON,
-                "This category accumulates all types of transactions, including both income and expense. It is protected from modification/deletion."
+                "This category accumulates all types of transactions, including both income and expense. It is protected from modification or deletion."
         );
         categoryService.save(commonCategory);
 
@@ -36,7 +36,7 @@ public class UserAspect {
                 user,
                 "Service",
                 CategoryType.SERVICE,
-                "This category refers to operations that are not related to financial operations. It is protected from modification/deletion."
+                "This category refers to operations performed by the service. It is protected from modification or deletion."
         );
         categoryService.save(otherCategory);
     }

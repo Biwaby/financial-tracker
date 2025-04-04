@@ -19,12 +19,12 @@ public class UserController {
     @GetMapping("/get-self")
     public ResponseEntity<ObjectResponse> getSelf() {
         UserDto userDto = userService.getSelf();
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s>".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
                 userDto
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PutMapping("/update-username")
@@ -36,12 +36,12 @@ public class UserController {
             )
             String username
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "The username has been updated. You need to log in again.",
                 HttpStatus.OK.toString(),
                 userService.updateUsername(username)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PutMapping("/update-password")
@@ -53,23 +53,23 @@ public class UserController {
             )
             String password
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "The password has been updated. You need to log in again.",
                 HttpStatus.OK.toString(),
                 userService.updatePassword(password)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete-self")
     public ResponseEntity<ObjectResponse> deleteSelf() {
         UserDto userDto = userService.getSelf();
         userService.deleteSelf();
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
                 userDto
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

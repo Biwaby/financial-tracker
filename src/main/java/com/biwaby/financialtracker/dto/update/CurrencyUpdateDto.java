@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CurrencyUpdateDto {
 
-    @Size(min = 3, max = 3, message = "The currency code must contain 3 characters")
+    @Size(min = 3, max = 3, message = "The <code> must contain 3 characters")
     private String code;
 
-    @Size(min = 3, max = 100, message = "The currency name must contain from 3 to 100 characters")
+    @Size(min = 3, max = 100, message = "The <name> must contain from 3 to 100 characters")
     private String name;
 }

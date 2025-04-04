@@ -3,5 +3,6 @@ package com.biwaby.financialtracker.enums;
 public enum SavingsTransactionType {
     INCOME,
     EXPENSE,
-    TRANSFER
+    TRANSFER_INCOME,
+    TRANSFER_EXPENSE
 }

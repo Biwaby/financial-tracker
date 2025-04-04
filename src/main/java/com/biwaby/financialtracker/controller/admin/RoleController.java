@@ -23,36 +23,36 @@ public class RoleController {
     public ResponseEntity<ObjectResponse> create(
             @Valid @RequestBody Role role
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Role added successfully",
                 HttpStatus.OK.toString(),
                 roleService.create(role)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Role with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 roleService.getById(id)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Roles list",
                 HttpStatus.OK.toString(),
                 roleService.getAll().stream()
                         .map(role -> (Object) role)
                         .collect(Collectors.toList())
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PutMapping("/update")
@@ -60,12 +60,12 @@ public class RoleController {
             @RequestParam Long id,
             @Valid @RequestBody Role role
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Role with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 roleService.update(id, role)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
@@ -74,11 +74,11 @@ public class RoleController {
     ) {
         Role deletedRole = roleService.getById(id);
         roleService.deleteById(id);
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Role with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 deletedRole
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }

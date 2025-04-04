@@ -3,6 +3,7 @@ package com.biwaby.financialtracker.controller.user;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.SavingsTransaction;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +16,24 @@ public class SavingsTransactionController {
     public ResponseEntity<ObjectResponse> create(
             @RequestBody SavingsTransaction savingsTransaction
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction created successfully",
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
@@ -40,12 +41,18 @@ public class SavingsTransactionController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Savings transactions list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("PageSize", String.valueOf(pageSize));
+        responseHeaders.add("PageNumber", String.valueOf(pageNumber));
+        return ResponseEntity
+                .ok()
+                .headers(responseHeaders)
+                .body(responseBody);
     }
 
     @PutMapping("/update")
@@ -53,23 +60,23 @@ public class SavingsTransactionController {
             @RequestParam Long id,
             @RequestBody SavingsTransaction savingsTransaction
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
                 null
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }
