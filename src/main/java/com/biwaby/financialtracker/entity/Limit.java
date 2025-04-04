@@ -42,13 +42,18 @@ public class Limit {
 
     @Column(
             name = "target_amount",
+            nullable = false,
             precision = 15,
-            scale = 2,
-            nullable = false
+            scale = 2
     )
     private BigDecimal targetAmount;
 
-    @Column(name = "current_amount", precision = 15, scale = 2)
+    @Column(
+            name = "current_amount",
+            nullable = false,
+            precision = 15,
+            scale = 2
+    )
     private BigDecimal currentAmount = BigDecimal.ZERO;
 
     @Override

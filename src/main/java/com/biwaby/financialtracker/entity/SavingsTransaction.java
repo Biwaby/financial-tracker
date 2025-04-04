@@ -29,7 +29,7 @@ public class SavingsTransaction {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = true)
     private Wallet wallet;
 
     @ManyToOne
@@ -51,7 +51,7 @@ public class SavingsTransaction {
     @Column(name = "transaction_date", nullable = false)
     private LocalDateTime transactionDate;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Override

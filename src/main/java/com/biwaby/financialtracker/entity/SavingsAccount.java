@@ -43,7 +43,12 @@ public class SavingsAccount {
     )
     private BigDecimal targetAmount;
 
-    @Column(name = "current_amount", precision = 15, scale = 2)
+    @Column(
+            name = "current_amount",
+            nullable = false,
+            precision = 15,
+            scale = 2
+    )
     private BigDecimal currentAmount = BigDecimal.ZERO;
 
     @Column(name = "deadline")
