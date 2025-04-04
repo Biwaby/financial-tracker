@@ -79,6 +79,12 @@ public class CurrencyServiceImpl implements CurrencyService {
             String currencyCode = dto.getCode().toUpperCase();
             dto.setCode(currencyCode);
 
+            if (dto.getCode().equals("NON")) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with code <%s> cannot be updated".formatted(currencyCode)
+                );
+            }
             if (currencyRepository.existsByCode(currencyCode)) {
                 throw new ResponseException(
                         HttpStatus.BAD_REQUEST.value(),
@@ -88,6 +94,12 @@ public class CurrencyServiceImpl implements CurrencyService {
             currencyToUpdate.setCode(dto.getCode());
         }
         if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
+            if (dto.getName().equals("Missing currency")) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with name <%s> cannot be updated".formatted(dto.getName())
+                );
+            }
             if (currencyRepository.existsByName(dto.getName())) {
                 throw new ResponseException(
                         HttpStatus.BAD_REQUEST.value(),
@@ -103,6 +115,12 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Transactional
     public void deleteById(Long id) {
         Currency currencyToDelete = getById(id);
+        if (currencyToDelete.getCode().equals("NON") || currencyToDelete.getName().equals("Missing currency")) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Currency with id <%s> cannot be deleted".formatted(id)
+            );
+        }
         currencyRepository.delete(currencyToDelete);
     }
 }
