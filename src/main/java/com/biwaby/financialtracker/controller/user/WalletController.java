@@ -1,77 +1,147 @@
 package com.biwaby.financialtracker.controller.user;
 
-import com.biwaby.financialtracker.dto.response.DeleteResponse;
-import com.biwaby.financialtracker.dto.response.EditResponse;
+import com.biwaby.financialtracker.dto.create.WalletCreateDto;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
+import com.biwaby.financialtracker.dto.update.WalletUpdateDto;
 import com.biwaby.financialtracker.entity.Wallet;
+import com.biwaby.financialtracker.service.WalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor
 public class WalletController {
 
+    private final WalletService walletService;
+
     @PostMapping("/create")
     public ResponseEntity<ObjectResponse> createWallet(
-            @RequestBody Wallet wallet
+            @RequestBody @Valid WalletCreateDto dto
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Wallet created successfully",
                 HttpStatus.OK.toString(),
-                null
+                walletService.create(dto)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-by-id")
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        ObjectResponse response = new ObjectResponse(
+        ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                walletService.getById(id)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        ObjectListResponse response = new ObjectListResponse(
+        ObjectListResponse responseBody = new ObjectListResponse(
                 "Wallets list",
                 HttpStatus.OK.toString(),
-                null
+                walletService.getAll().stream()
+                        .map(wallet -> (Object) wallet)
+                        .collect(Collectors.toList())
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
-    @PutMapping("/edit")
-    public ResponseEntity<EditResponse> edit(
+    @PostMapping("/deposit")
+    public ResponseEntity<ObjectResponse> depositById(
             @RequestParam Long id,
-            @RequestBody Wallet wallet
+            @RequestParam Long categoryId,
+            @RequestParam BigDecimal amount
     ) {
-        EditResponse response = new EditResponse(
+        Wallet wallet = walletService.deposit(id, categoryId, amount);
+        ObjectResponse responseBody = new ObjectResponse(
+                "The amount of <%s %s> has been successfully deposited to the wallet (with id <%s>) balance".formatted(amount, wallet.getCurrency().getCode(), id),
+                HttpStatus.OK.toString(),
+                wallet
+        );
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity<ObjectResponse> withdrawById(
+            @RequestParam Long id,
+            @RequestParam Long categoryId,
+            @RequestParam BigDecimal amount
+    ) {
+        Wallet wallet = walletService.withdraw(id, categoryId, amount);
+        ObjectResponse responseBody = new ObjectResponse(
+                "The amount of <%s %s> has been successfully withdrawn from the wallet (with id <%s>) balance".formatted(amount, wallet.getCurrency().getCode(), id),
+                HttpStatus.OK.toString(),
+                wallet
+        );
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<ObjectResponse> transfer(
+            @RequestParam Long senderWalletId,
+            @RequestParam Long targetWalletId,
+            @RequestParam BigDecimal amount
+    ) {
+        Pair<Wallet, Wallet> wallets = walletService.transfer(senderWalletId, targetWalletId, amount);
+        ObjectResponse responseBody = new ObjectResponse(
+                "The amount of <%s %s> has been successfully transferred from the wallet (with id <%s>) to the wallet (with id <%s>)"
+                        .formatted(amount, wallets.getFirst().getCurrency().getCode(), senderWalletId, targetWalletId),
+                HttpStatus.OK.toString(),
+                wallets
+        );
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<ObjectResponse> updateById(
+            @RequestParam Long id,
+            @RequestBody @Valid WalletUpdateDto dto
+    ) {
+        ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null,
-                null
+                walletService.update(id, dto)
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @PostMapping("/change-currency")
+    public ResponseEntity<ObjectResponse> changeCurrency(
+            @RequestParam Long id,
+            @RequestParam String currencyCode
+    ) {
+        ObjectResponse responseBody = new ObjectResponse(
+                "Currency for wallet with id <%s> has been successfully changed".formatted(id),
+                HttpStatus.OK.toString(),
+                walletService.changeCurrency(id, currencyCode)
+        );
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponse> deleteById(
+    public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        DeleteResponse response = new DeleteResponse(
+        Wallet deletedWallet = walletService.getById(id);
+        walletService.deleteById(id);
+        ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                deletedWallet
         );
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 }
