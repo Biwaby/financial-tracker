@@ -1,6 +1,7 @@
 package com.biwaby.financialtracker.entity;
 
 import com.biwaby.financialtracker.enums.WalletTransactionType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -24,10 +25,12 @@ public class WalletTransaction {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "wallet_id", referencedColumnName = "id", nullable = false)
     private Wallet wallet;
@@ -35,6 +38,9 @@ public class WalletTransaction {
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
+
+    @Column(name = "name", nullable = false, length = 255)
+    private String name;
 
     @Column(name = "type", nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
@@ -51,7 +57,7 @@ public class WalletTransaction {
     @Column(name = "transaction_date", nullable = false)
     private LocalDateTime transactionDate;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT", nullable = true)
     private String description;
 
     @Override
