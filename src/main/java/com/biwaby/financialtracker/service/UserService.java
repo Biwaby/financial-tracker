@@ -12,12 +12,14 @@ public interface UserService {
     User create(User user);
     UserDto getById(Long id);
     UserDto getByUsername(String username);
+    User getEntityById(Long id);
     User getEntityByUsername(String username);
     User getCurrentUserEntity();
-    UserDto getSelf();
+    UserDto getSelfDto();
     List<UserDto> getAll(Integer pageSize, Integer pageNumber);
     UserDto updateUsername(String username);
     UserDto updatePassword(String password);
+    UserDto updateUserRole(Long userId, String authority);
     void deleteById(Long id);
     void deleteByUsername(String username);
     void deleteSelf();

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
-public class AdminController {
+public class UserAdminController {
 
     private final UserService userService;
 
@@ -63,6 +63,19 @@ public class AdminController {
                 .ok()
                 .headers(responseHeaders)
                 .body(responseBody);
+    }
+
+    @PostMapping("/users/update-role")
+    public ResponseEntity<ObjectResponse> updateRole(
+            @RequestParam Long userId,
+            @RequestParam String authority
+    ) {
+        ObjectResponse responseBody = new ObjectResponse(
+                "Role for user with id <%s> has been successfully updated".formatted(userId),
+                HttpStatus.OK.toString(),
+                userService.updateUserRole(userId, authority)
+        );
+        return ResponseEntity.ok(responseBody);
     }
 
     @DeleteMapping("/users/delete-by-id")

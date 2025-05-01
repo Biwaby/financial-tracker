@@ -1,9 +1,11 @@
 package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.dto.UserDto;
+import com.biwaby.financialtracker.entity.Role;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.mapper.UserMapper;
+import com.biwaby.financialtracker.repository.RoleRepository;
 import com.biwaby.financialtracker.repository.UserRepository;
 import com.biwaby.financialtracker.service.UserService;
 import com.biwaby.financialtracker.util.PasswordEncoderUtil;
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
@@ -40,6 +43,8 @@ public class UserServiceImpl implements UserService {
                     "User with username <%s> already exists".formatted(user.getUsername())
             );
         }
+        Role userRole = user.getRole();
+        userRole.getUsersWithRole().add(user);
         return save(user);
     }
 
@@ -68,6 +73,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getEntityById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "User with id <%s> is not found".formatted(id)
+                )
+        );
+    }
+
+    @Override
     public User getEntityByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new ResponseException(
@@ -84,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getSelf() {
+    public UserDto getSelfDto() {
         return userMapper.toDto(getCurrentUserEntity());
     }
 
@@ -113,6 +128,21 @@ public class UserServiceImpl implements UserService {
         if (password != null && !password.trim().isEmpty()) {
             userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder().encode(password));
         }
+        return userMapper.toDto(save(userToUpdate));
+    }
+
+    @Override
+    @Transactional
+    public UserDto updateUserRole(Long userId, String authority) {
+        User userToUpdate = getEntityById(userId);
+        Role newRole = roleRepository.findByName(authority).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Role with authority <%s> is not found".formatted(authority)
+                )
+        );
+        userToUpdate.setRole(newRole);
+        newRole.getUsersWithRole().add(userToUpdate);
         return userMapper.toDto(save(userToUpdate));
     }
 
