@@ -2,8 +2,12 @@ package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.dto.update.CurrencyUpdateDto;
 import com.biwaby.financialtracker.entity.Currency;
+import com.biwaby.financialtracker.entity.SavingsAccount;
+import com.biwaby.financialtracker.entity.Wallet;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.CurrencyRepository;
+import com.biwaby.financialtracker.repository.SavingsAccountRepository;
+import com.biwaby.financialtracker.repository.WalletRepository;
 import com.biwaby.financialtracker.service.CurrencyService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,8 @@ import java.util.List;
 public class CurrencyServiceImpl implements CurrencyService {
 
     private final CurrencyRepository currencyRepository;
+    private final WalletRepository walletRepository;
+    private final SavingsAccountRepository savingsAccountRepository;
 
     @Override
     @Transactional
@@ -27,13 +33,19 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Override
     @Transactional
     public Currency create(Currency currency) {
-        String currencyCode = currency.getCode().toUpperCase();
-        currency.setCode(currencyCode);
+        String currencyLetterCode = currency.getLetterCode().toUpperCase();
+        currency.setLetterCode(currencyLetterCode);
 
         if (currencyRepository.existsByCode(currency.getCode())) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Currency with code <%s> already exists".formatted(currency.getCode())
+            );
+        }
+        if (currencyRepository.existsByLetterCode(currency.getLetterCode())) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Currency with letter code <%s> already exists".formatted(currency.getLetterCode())
             );
         }
         if (currencyRepository.existsByName(currency.getName())) {
@@ -66,6 +78,16 @@ public class CurrencyServiceImpl implements CurrencyService {
     }
 
     @Override
+    public Currency getByLetterCode(String letterCode) {
+        return currencyRepository.findByLetterCode(letterCode).orElseThrow(
+                () -> new ResponseException(
+                        HttpStatus.NOT_FOUND.value(),
+                        "Currency with letter code <%s> is not found".formatted(letterCode)
+                )
+        );
+    }
+
+    @Override
     public List<Currency> getAll() {
         return currencyRepository.findAll();
     }
@@ -75,23 +97,26 @@ public class CurrencyServiceImpl implements CurrencyService {
     public Currency update(Long id, CurrencyUpdateDto dto) {
         Currency currencyToUpdate = getById(id);
 
-        if (dto.getCode() != null && !dto.getCode().trim().isEmpty()) {
-            String currencyCode = dto.getCode().toUpperCase();
-            dto.setCode(currencyCode);
-
-            if (dto.getCode().equals("NON")) {
-                throw new ResponseException(
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Currency with code <%s> cannot be updated".formatted(currencyCode)
-                );
-            }
-            if (currencyRepository.existsByCode(currencyCode)) {
-                throw new ResponseException(
-                        HttpStatus.BAD_REQUEST.value(),
-                        "Currency with code <%s> already exists".formatted(dto.getCode())
-                );
-            }
+        if (dto.getCode() != null && !dto.getCode().isEmpty()) {
             currencyToUpdate.setCode(dto.getCode());
+        }
+        if (dto.getLetterCode() != null && !dto.getLetterCode().trim().isEmpty()) {
+            String currencyLetterCode = dto.getLetterCode().toUpperCase();
+            dto.setLetterCode(currencyLetterCode);
+
+            if (dto.getLetterCode().equals("NON")) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with letter code <%s> cannot be updated".formatted(currencyLetterCode)
+                );
+            }
+            if (currencyRepository.existsByLetterCode(currencyLetterCode)) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Currency with letter code <%s> already exists".formatted(dto.getLetterCode())
+                );
+            }
+            currencyToUpdate.setLetterCode(dto.getLetterCode());
         }
         if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
             if (dto.getName().equals("Missing currency")) {
@@ -115,12 +140,35 @@ public class CurrencyServiceImpl implements CurrencyService {
     @Transactional
     public void deleteById(Long id) {
         Currency currencyToDelete = getById(id);
-        if (currencyToDelete.getCode().equals("NON") || currencyToDelete.getName().equals("Missing currency")) {
+        Currency nonCurrency = getByLetterCode("NON");
+        List<Wallet> walletsWithDeletedCurrency = currencyToDelete.getWalletsWithCurrency();
+        List<SavingsAccount> savingsAccountsWithDeletedCurrency = currencyToDelete.getSavingsAccountsWithCurrency();
+
+        if (currencyToDelete.equals(nonCurrency)) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Currency with id <%s> cannot be deleted".formatted(id)
             );
         }
+
+        setNonCurrencyForWallets(walletsWithDeletedCurrency);
+        setNonCurrencyForSavingsAccounts(savingsAccountsWithDeletedCurrency);
         currencyRepository.delete(currencyToDelete);
+    }
+
+    private void setNonCurrencyForWallets(List<Wallet> wallets) {
+        Currency nonCurrency = getByLetterCode("NON");
+        if (!wallets.isEmpty()) {
+            wallets.forEach(wallet -> wallet.setCurrency(nonCurrency));
+            walletRepository.saveAll(wallets);
+        }
+    }
+
+    private void setNonCurrencyForSavingsAccounts(List<SavingsAccount> savingsAccounts) {
+        Currency nonCurrency = getByLetterCode("NON");
+        if (!savingsAccounts.isEmpty()) {
+            savingsAccounts.forEach(savingsAccount -> savingsAccount.setCurrency(nonCurrency));
+            savingsAccountRepository.saveAll(savingsAccounts);
+        }
     }
 }

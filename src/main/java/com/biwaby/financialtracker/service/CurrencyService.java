@@ -11,6 +11,7 @@ public interface CurrencyService {
     Currency create(Currency currency);
     Currency getById(Long id);
     Currency getByCode(String code);
+    Currency getByLetterCode(String letterCode);
     List<Currency> getAll();
     Currency update(Long id, CurrencyUpdateDto dto);
     void deleteById(Long id);

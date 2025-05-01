@@ -1,11 +1,14 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -23,15 +26,30 @@ public class Currency {
     @Column(name = "id")
     private Long id;
 
-    @Size(min = 3, max = 3, message = "The <code> must contain 3 characters.")
     @NotBlank(message = "The <code> must not be empty.")
+    @Pattern(regexp = "^[0-9]{3}$", message = "The <code> must contain 3 digits from 0 to 9.")
     @Column(name = "code", nullable = false, length = 3)
     private String code;
+
+    @NotBlank(message = "The <letterCode> must not be empty.")
+    @Pattern(regexp = "^[a-zA-Z]{3}$", message = "The <letterCode> must consist of 3 case-insensitive characters of the Latin alphabet.")
+    @Column(name = "letter_code", nullable = false, length = 3)
+    private String letterCode;
 
     @Size(min = 3, max = 100, message = "The <name> must contain from 3 to 100 characters.")
     @NotBlank(message = "The <name> must not be empty.")
     @Column(name = "name", nullable = false, length = 100)
     private String name;
+
+    @OneToMany(targetEntity = Wallet.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Wallet> walletsWithCurrency;
+
+    @OneToMany(targetEntity = SavingsAccount.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<SavingsAccount> savingsAccountsWithCurrency;
 
     @Override
     public final boolean equals(Object o) {

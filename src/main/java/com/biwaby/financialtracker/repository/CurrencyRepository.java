@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface CurrencyRepository extends JpaRepository<Currency, Long> {
 
     Boolean existsByCode(String code);
+    Boolean existsByLetterCode(String letterCode);
     Boolean existsByName(String name);
     Optional<Currency> findByCode(String code);
+    Optional<Currency> findByLetterCode(String letterCode);
 }
