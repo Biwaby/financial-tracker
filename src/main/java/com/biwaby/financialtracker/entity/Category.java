@@ -7,6 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -41,6 +42,11 @@ public class Category {
 
     @Column(name = "description", columnDefinition = "TEXT", nullable = true)
     private String description;
+
+    @OneToMany(targetEntity = WalletTransaction.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<WalletTransaction> walletsTransactionsWithCategory;
 
     @Override
     public final boolean equals(Object o) {

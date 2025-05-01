@@ -54,6 +54,9 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
         if (dto.getDescription() != null && !dto.getDescription().trim().isEmpty()) {
             transactionToCreate.setDescription(dto.getDescription());
         }
+
+        category.getWalletsTransactionsWithCategory().add(transactionToCreate);
+
         return save(transactionToCreate);
     }
 
