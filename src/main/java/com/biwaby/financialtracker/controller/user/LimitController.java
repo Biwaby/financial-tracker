@@ -1,26 +1,42 @@
 package com.biwaby.financialtracker.controller.user;
 
+import com.biwaby.financialtracker.dto.create.LimitCreateDto;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
+import com.biwaby.financialtracker.dto.update.LimitUpdateDto;
 import com.biwaby.financialtracker.entity.Limit;
+import com.biwaby.financialtracker.entity.User;
+import com.biwaby.financialtracker.entity.Wallet;
+import com.biwaby.financialtracker.service.LimitService;
+import com.biwaby.financialtracker.service.WalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/limits")
 @RequiredArgsConstructor
 public class LimitController {
 
-    @PostMapping("/add")
-    public ResponseEntity<ObjectResponse> add(
-            @RequestBody Limit limit
+    private final LimitService limitService;
+    private final WalletService walletService;
+
+    @PostMapping("/create")
+    public ResponseEntity<ObjectResponse> create(
+            @RequestParam Long walletId,
+            @RequestBody @Valid LimitCreateDto dto
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Wallet wallet = walletService.getById(user, walletId);
         ObjectResponse responseBody = new ObjectResponse(
-                "Limit added successfully",
+                "Limit created successfully",
                 HttpStatus.OK.toString(),
-                null
+                limitService.create(user, wallet, dto)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -29,33 +45,53 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                limitService.getById(user, id)
+        );
+        return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping("/get-by-wallet-id")
+    public ResponseEntity<ObjectResponse> getByWalletId(
+            @RequestParam Long walletId
+    ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Wallet wallet = walletService.getById(user, walletId);
+        ObjectResponse responseBody = new ObjectResponse(
+                "Limit for wallet with walletId <%s>".formatted(walletId),
+                HttpStatus.OK.toString(),
+                limitService.getByWallet(user, wallet)
         );
         return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Limits list",
                 HttpStatus.OK.toString(),
-                null
+                limitService.getAll(user)
+                        .stream()
+                        .map(limit -> (Object) limit)
+                        .collect(Collectors.toList())
         );
         return ResponseEntity.ok(responseBody);
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
-            @RequestBody Limit limit
+            @RequestBody @Valid LimitUpdateDto dto
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                limitService.update(user, id, dto)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -64,10 +100,13 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Limit deletedLimit = limitService.getById(user, id);
+        limitService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),
-                null
+                deletedLimit
         );
         return ResponseEntity.ok(responseBody);
     }

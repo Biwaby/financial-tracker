@@ -1,11 +1,13 @@
 package com.biwaby.financialtracker.entity;
 
 import com.biwaby.financialtracker.enums.LimitType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -23,10 +25,11 @@ public class Limit {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
-
+    
     @OneToOne
     @JoinColumn(
             name = "wallet_id",
@@ -55,6 +58,15 @@ public class Limit {
             scale = 2
     )
     private BigDecimal currentAmount = BigDecimal.ZERO;
+
+    @Column(name = "is_exceeded", nullable = false)
+    private Boolean isExceeded = Boolean.FALSE;
+
+    @Column(name = "creation_date", nullable = false)
+    private LocalDateTime creationDate;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = Boolean.FALSE;
 
     @Override
     public final boolean equals(Object o) {
