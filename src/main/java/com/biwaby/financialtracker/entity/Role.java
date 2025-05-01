@@ -1,11 +1,13 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -27,6 +29,11 @@ public class Role {
     @NotBlank(message = "The <name> must not be empty")
     @Column(name = "name", nullable = false, length = 50)
     private String name;
+
+    @OneToMany(targetEntity = User.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<User> usersWithRole;
 
     @Override
     public final boolean equals(Object o) {

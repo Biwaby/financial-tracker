@@ -2,15 +2,13 @@ package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.dto.create.WalletTransactionCreateDto;
 import com.biwaby.financialtracker.dto.update.WalletTransactionUpdateDto;
+import com.biwaby.financialtracker.entity.Category;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.entity.Wallet;
 import com.biwaby.financialtracker.entity.WalletTransaction;
 import com.biwaby.financialtracker.enums.WalletTransactionType;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.WalletTransactionRepository;
-import com.biwaby.financialtracker.service.CategoryService;
-import com.biwaby.financialtracker.service.UserService;
-import com.biwaby.financialtracker.service.WalletService;
 import com.biwaby.financialtracker.service.WalletTransactionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,9 +27,6 @@ import java.util.stream.Collectors;
 public class WalletTransactionServiceImpl implements WalletTransactionService {
 
     private final WalletTransactionRepository walletTransactionRepository;
-    private final UserService userService;
-    private final WalletService walletService;
-    private final CategoryService categoryService;
 
     @Override
     @Transactional
@@ -40,12 +36,12 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
 
     @Override
     @Transactional
-    public WalletTransaction create(Long walletId, Long categoryId, WalletTransactionCreateDto dto) {
+    public WalletTransaction create(User user, Wallet wallet, Category category, WalletTransactionCreateDto dto) {
         WalletTransaction transactionToCreate = new WalletTransaction();
 
-        transactionToCreate.setUser(userService.getCurrentUserEntity());
-        transactionToCreate.setWallet(walletService.getById(walletId));
-        transactionToCreate.setCategory(categoryService.getById(categoryId));
+        transactionToCreate.setUser(user);
+        transactionToCreate.setWallet(wallet);
+        transactionToCreate.setCategory(category);
         transactionToCreate.setName(dto.getName());
         transactionToCreate.setType(WalletTransactionType.getTypeByValue(dto.getType()));
         transactionToCreate.setAmount(dto.getAmount());
@@ -62,8 +58,7 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
     }
 
     @Override
-    public WalletTransaction getById(Long id) {
-        User user = userService.getCurrentUserEntity();
+    public WalletTransaction getById(User user, Long id) {
         return walletTransactionRepository.findByIdAndUser(id, user).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
@@ -73,9 +68,7 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
     }
 
     @Override
-    public List<WalletTransaction> getAll(Long walletId, Integer pageSize, Integer pageNumber) {
-        User user = userService.getCurrentUserEntity();
-        Wallet wallet = walletService.getById(walletId);
+    public List<WalletTransaction> getAll(User user, Wallet wallet, Integer pageSize, Integer pageNumber) {
         return walletTransactionRepository.findAllByUserAndWallet(user, wallet, PageRequest.of(pageNumber, pageSize))
                 .get()
                 .collect(Collectors.toList());
@@ -83,10 +76,10 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
 
     @Override
     @Transactional
-    public WalletTransaction update(Long id, Long categoryId, WalletTransactionUpdateDto dto) {
-        WalletTransaction transactionToUpdate = getById(id);
-        if (categoryId != null) {
-            transactionToUpdate.setCategory(categoryService.getById(categoryId));
+    public WalletTransaction update(User user, Long id, Category category, WalletTransactionUpdateDto dto) {
+        WalletTransaction transactionToUpdate = getById(user, id);
+        if (category != null) {
+            transactionToUpdate.setCategory(category);
         }
         if (dto != null) {
             if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
@@ -96,6 +89,12 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
                 transactionToUpdate.setType(WalletTransactionType.getTypeByValue(dto.getType()));
             }
             if (dto.getAmount() != null) {
+                if (dto.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                    throw new ResponseException(
+                            HttpStatus.BAD_REQUEST.value(),
+                            "<amount> must be equal or greater than zero"
+                    );
+                }
                 transactionToUpdate.setAmount(dto.getAmount());
             }
             if (dto.getTransactionDate() != null && !dto.getTransactionDate().trim().isEmpty()) {
@@ -110,8 +109,8 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        WalletTransaction transactionToDelete = getById(id);
+    public void deleteById(User user, Long id) {
+        WalletTransaction transactionToDelete = getById(user, id);
         walletTransactionRepository.delete(transactionToDelete);
     }
 }

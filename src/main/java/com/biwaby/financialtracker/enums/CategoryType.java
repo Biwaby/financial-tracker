@@ -31,7 +31,7 @@ public enum CategoryType {
 
     @JsonCreator
     public static CategoryType getTypeByValue(String value) {
-        if (value.isEmpty()) {
+        if (value.trim().isEmpty()) {
             throw new IllegalArgumentException("The <type> must not be empty. Available values: [%s]".formatted(getAllTypes()));
         }
         for (CategoryType ct : CategoryType.values()) {

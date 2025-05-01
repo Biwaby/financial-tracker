@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/get-self")
     public ResponseEntity<ObjectResponse> getSelf() {
-        UserDto userDto = userService.getSelf();
+        UserDto userDto = userService.getSelfDto();
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s>".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
@@ -63,7 +63,7 @@ public class UserController {
 
     @DeleteMapping("/delete-self")
     public ResponseEntity<ObjectResponse> deleteSelf() {
-        UserDto userDto = userService.getSelf();
+        UserDto userDto = userService.getSelfDto();
         userService.deleteSelf();
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(userDto.getUsername()),

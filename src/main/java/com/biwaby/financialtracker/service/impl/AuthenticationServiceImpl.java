@@ -5,10 +5,7 @@ import com.biwaby.financialtracker.dto.auth.JwtAuthenticationResponse;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.UserRepository;
-import com.biwaby.financialtracker.service.AuthenticationService;
-import com.biwaby.financialtracker.service.JwtService;
-import com.biwaby.financialtracker.service.RoleService;
-import com.biwaby.financialtracker.service.UserService;
+import com.biwaby.financialtracker.service.*;
 import com.biwaby.financialtracker.util.PasswordEncoderUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final RoleService roleService;
     private final UserRepository userRepository;
+    private final CategoryService categoryService;
 
     @Override
     public JwtAuthenticationResponse signUp(AuthRequest request) {
@@ -44,7 +42,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setRole(roleService.getByAuthority("USER"));
             user.setRegisteredAt(LocalDateTime.now());
 
-            userService.create(user);
+            User savedUser = userService.create(user);
+            categoryService.createCommonCategoriesForUser(savedUser);
             var jwt = jwtService.generateToken(user);
 
             return new JwtAuthenticationResponse(jwt);

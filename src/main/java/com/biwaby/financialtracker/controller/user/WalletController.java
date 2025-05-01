@@ -4,13 +4,19 @@ import com.biwaby.financialtracker.dto.create.WalletCreateDto;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.dto.update.WalletUpdateDto;
+import com.biwaby.financialtracker.entity.Category;
+import com.biwaby.financialtracker.entity.Currency;
+import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.entity.Wallet;
+import com.biwaby.financialtracker.service.CategoryService;
+import com.biwaby.financialtracker.service.CurrencyService;
 import com.biwaby.financialtracker.service.WalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -22,15 +28,18 @@ import java.util.stream.Collectors;
 public class WalletController {
 
     private final WalletService walletService;
+    private final CategoryService categoryService;
+    private final CurrencyService currencyService;
 
     @PostMapping("/create")
     public ResponseEntity<ObjectResponse> createWallet(
             @RequestBody @Valid WalletCreateDto dto
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet created successfully",
                 HttpStatus.OK.toString(),
-                walletService.create(dto)
+                walletService.create(user, dto)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -39,20 +48,22 @@ public class WalletController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
-                walletService.getById(id)
+                walletService.getById(user, id)
         );
         return ResponseEntity.ok(responseBody);
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Wallets list",
                 HttpStatus.OK.toString(),
-                walletService.getAll().stream()
+                walletService.getAll(user).stream()
                         .map(wallet -> (Object) wallet)
                         .collect(Collectors.toList())
         );
@@ -65,7 +76,9 @@ public class WalletController {
             @RequestParam Long categoryId,
             @RequestParam BigDecimal amount
     ) {
-        Wallet wallet = walletService.deposit(id, categoryId, amount);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Category category = categoryService.getById(user, categoryId);
+        Wallet wallet = walletService.deposit(user, id, category, amount);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully deposited to the wallet (with id <%s>) balance".formatted(amount, wallet.getCurrency().getCode(), id),
                 HttpStatus.OK.toString(),
@@ -80,7 +93,9 @@ public class WalletController {
             @RequestParam Long categoryId,
             @RequestParam BigDecimal amount
     ) {
-        Wallet wallet = walletService.withdraw(id, categoryId, amount);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Category category = categoryService.getById(user, categoryId);
+        Wallet wallet = walletService.withdraw(user, id, category, amount);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully withdrawn from the wallet (with id <%s>) balance".formatted(amount, wallet.getCurrency().getCode(), id),
                 HttpStatus.OK.toString(),
@@ -95,7 +110,8 @@ public class WalletController {
             @RequestParam Long targetWalletId,
             @RequestParam BigDecimal amount
     ) {
-        Pair<Wallet, Wallet> wallets = walletService.transfer(senderWalletId, targetWalletId, amount);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pair<Wallet, Wallet> wallets = walletService.transfer(user, senderWalletId, targetWalletId, amount);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully transferred from the wallet (with id <%s>) to the wallet (with id <%s>)"
                         .formatted(amount, wallets.getFirst().getCurrency().getCode(), senderWalletId, targetWalletId),
@@ -110,10 +126,11 @@ public class WalletController {
             @RequestParam Long id,
             @RequestBody @Valid WalletUpdateDto dto
     ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
-                walletService.update(id, dto)
+                walletService.update(user, id, dto)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -123,10 +140,11 @@ public class WalletController {
             @RequestParam Long id,
             @RequestParam String currencyCode
     ) {
+        Currency currency = currencyService.getByCode(currencyCode);
         ObjectResponse responseBody = new ObjectResponse(
                 "Currency for wallet with id <%s> has been successfully changed".formatted(id),
                 HttpStatus.OK.toString(),
-                walletService.changeCurrency(id, currencyCode)
+                walletService.changeWalletCurrency(id, currency)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -135,8 +153,9 @@ public class WalletController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        Wallet deletedWallet = walletService.getById(id);
-        walletService.deleteById(id);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Wallet deletedWallet = walletService.getById(user, id);
+        walletService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s> has been successfully deleted".formatted(id),
                 HttpStatus.OK.toString(),

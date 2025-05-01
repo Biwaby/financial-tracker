@@ -32,7 +32,7 @@ public enum WalletTransactionType {
 
     @JsonCreator
     public static WalletTransactionType getTypeByValue(String value) {
-        if (value.isEmpty()) {
+        if (value.trim().isEmpty()) {
             throw new IllegalArgumentException("The <type> must not be empty. Available values: [%s]".formatted(getAllTypes()));
         }
         for (WalletTransactionType wt : WalletTransactionType.values()) {

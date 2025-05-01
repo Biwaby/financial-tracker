@@ -1,8 +1,10 @@
 package com.biwaby.financialtracker.service.impl;
 
 import com.biwaby.financialtracker.entity.Role;
+import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.RoleRepository;
+import com.biwaby.financialtracker.repository.UserRepository;
 import com.biwaby.financialtracker.service.RoleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.List;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -85,12 +88,25 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteById(Long id) {
         Role roleToDelete = getById(id);
-        if (roleToDelete.getName().equals("USER")) {
+        Role userRole = getByAuthority("USER");
+        List<User> usersWithDeletedRole = roleToDelete.getUsersWithRole();
+
+        if (roleToDelete.equals(userRole)) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Role with name <%s> cannot be deleted".formatted(roleToDelete.getName())
             );
         }
+
+        setUserRoleDefault(usersWithDeletedRole);
         roleRepository.delete(roleToDelete);
+    }
+
+    private void setUserRoleDefault(List<User> users) {
+        Role defaultRole = getByAuthority("USER");
+        if (!users.isEmpty()) {
+            users.forEach(user -> user.setRole(defaultRole));
+            userRepository.saveAll(users);
+        }
     }
 }

@@ -7,7 +7,6 @@ import com.biwaby.financialtracker.enums.CategoryType;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.CategoryRepository;
 import com.biwaby.financialtracker.service.CategoryService;
-import com.biwaby.financialtracker.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final UserService userService;
 
     @Override
     @Transactional
@@ -32,8 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category create(Category category) {
-        User user = userService.getCurrentUserEntity();
+    public Category create(User user, Category category) {
         if (categoryRepository.existsByNameAndUser(category.getName(), user)) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
@@ -45,8 +42,29 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getById(Long id) {
-        User user = userService.getCurrentUserEntity();
+    @Transactional
+    public void createCommonCategoriesForUser(User user) {
+        Category commonCategory = new Category(
+                null,
+                user,
+                "Common",
+                CategoryType.COMMON,
+                "This category accumulates all types of transactions, including both income and expense. It is protected from modification or deletion."
+        );
+        save(commonCategory);
+
+        Category otherCategory = new Category(
+                null,
+                user,
+                "Service",
+                CategoryType.SERVICE,
+                "This category refers to operations performed by the service. It is protected from modification or deletion."
+        );
+        save(otherCategory);
+    }
+
+    @Override
+    public Category getById(User user, Long id) {
         return categoryRepository.findByIdAndUser(id, user).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
@@ -56,8 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getByName(String name) {
-        User user = userService.getCurrentUserEntity();
+    public Category getByName(User user, String name) {
         return categoryRepository.findByNameAndUser(name, user).orElseThrow(
                 () -> new ResponseException(
                         HttpStatus.NOT_FOUND.value(),
@@ -67,8 +84,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAll(Integer pageSize, Integer pageNumber) {
-        User user = userService.getCurrentUserEntity();
+    public List<Category> getAll(User user, Integer pageSize, Integer pageNumber) {
         return categoryRepository.findAllByUser(user, PageRequest.of(pageNumber, pageSize))
                 .get()
                 .collect(Collectors.toList());
@@ -76,8 +92,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category update(Long id, CategoryUpdateDto dto) {
-        Category categoryToUpdate = getById(id);
+    public Category update(User user, Long id, CategoryUpdateDto dto) {
+        Category categoryToUpdate = getById(user, id);
         if (categoryToUpdate.getName().equals("Common") || categoryToUpdate.getName().equals("Service")) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
@@ -85,7 +101,6 @@ public class CategoryServiceImpl implements CategoryService {
             );
         }
 
-        User user = userService.getCurrentUserEntity();
         if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
             if (!categoryRepository.existsByNameAndUser(dto.getName(), user)) {
                 categoryToUpdate.setName(dto.getName());
@@ -107,8 +122,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        Category categoryToDelete = getById(id);
+    public void deleteById(User user, Long id) {
+        Category categoryToDelete = getById(user, id);
         if (categoryToDelete.getName().equals("Common") || categoryToDelete.getName().equals("Service")) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
