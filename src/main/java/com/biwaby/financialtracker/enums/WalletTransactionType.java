@@ -8,7 +8,7 @@ public enum WalletTransactionType {
     EXPENSE("Expense"),
     TRANSFER_INCOME("Transfer income"),
     TRANSFER_EXPENSE("Transfer expense"),
-    CHANGING_CURRENCY("Changing Currency"),
+    CHANGING_CURRENCY("Changing currency"),
     OTHER("Other");
 
     private final String displayName;

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1746107061613-1
+      id: 1746194420370-1
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -9,7 +9,7 @@ databaseChangeLog:
             sequenceName: category_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-2
+      id: 1746194420370-2
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -18,7 +18,7 @@ databaseChangeLog:
             sequenceName: currency_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-3
+      id: 1746194420370-3
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -27,7 +27,7 @@ databaseChangeLog:
             sequenceName: limit_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-4
+      id: 1746194420370-4
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -36,7 +36,7 @@ databaseChangeLog:
             sequenceName: role_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-5
+      id: 1746194420370-5
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -45,7 +45,7 @@ databaseChangeLog:
             sequenceName: savings_account_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-6
+      id: 1746194420370-6
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -54,7 +54,7 @@ databaseChangeLog:
             sequenceName: savings_transaction_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-7
+      id: 1746194420370-7
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -63,7 +63,7 @@ databaseChangeLog:
             sequenceName: user_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-8
+      id: 1746194420370-8
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -72,7 +72,7 @@ databaseChangeLog:
             sequenceName: wallet_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-9
+      id: 1746194420370-9
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -81,7 +81,7 @@ databaseChangeLog:
             sequenceName: wallet_transaction_id_seq
             startValue: 1
   - changeSet:
-      id: 1746107061613-10
+      id: 1746194420370-10
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -114,7 +114,7 @@ databaseChangeLog:
                   type: TEXT
             tableName: categories
   - changeSet:
-      id: 1746107061613-11
+      id: 1746194420370-11
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -132,7 +132,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: categories_wallets_transactions_with_category
   - changeSet:
-      id: 1746107061613-12
+      id: 1746194420370-12
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -162,7 +162,7 @@ databaseChangeLog:
                   type: VARCHAR(100)
             tableName: currencies
   - changeSet:
-      id: 1746107061613-13
+      id: 1746194420370-13
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -180,7 +180,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: currencies_savings_accounts_with_currency
   - changeSet:
-      id: 1746107061613-14
+      id: 1746194420370-14
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -198,7 +198,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: currencies_wallets_with_currency
   - changeSet:
-      id: 1746107061613-15
+      id: 1746194420370-15
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -253,7 +253,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: limits
   - changeSet:
-      id: 1746107061613-16
+      id: 1746194420370-16
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -273,7 +273,7 @@ databaseChangeLog:
                   type: VARCHAR(50)
             tableName: roles
   - changeSet:
-      id: 1746107061613-17
+      id: 1746194420370-17
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -291,7 +291,7 @@ databaseChangeLog:
                   type: BIGINT
             tableName: roles_users_with_role
   - changeSet:
-      id: 1746107061613-18
+      id: 1746194420370-18
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -339,7 +339,25 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: savings_accounts
   - changeSet:
-      id: 1746107061613-19
+      id: 1746194420370-19
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: savings_account_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: savings_transactions_id
+                  type: BIGINT
+            tableName: savings_accounts_savings_transactions
+  - changeSet:
+      id: 1746194420370-20
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -358,13 +376,15 @@ databaseChangeLog:
                   name: user_id
                   type: BIGINT
               - column:
-                  name: wallet_id
-                  type: BIGINT
-              - column:
                   constraints:
                     nullable: false
                   name: savings_id
                   type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: name
+                  type: VARCHAR(255)
               - column:
                   constraints:
                     nullable: false
@@ -385,7 +405,7 @@ databaseChangeLog:
                   type: TEXT
             tableName: savings_transactions
   - changeSet:
-      id: 1746107061613-20
+      id: 1746194420370-21
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -420,7 +440,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: users
   - changeSet:
-      id: 1746107061613-21
+      id: 1746194420370-22
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -473,7 +493,7 @@ databaseChangeLog:
                   type: TEXT
             tableName: wallet_transactions
   - changeSet:
-      id: 1746107061613-22
+      id: 1746194420370-23
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -508,7 +528,43 @@ databaseChangeLog:
                   type: BIGINT
             tableName: wallets
   - changeSet:
-      id: 1746107061613-23
+      id: 1746194420370-24
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wallet_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wallet_limits_id
+                  type: BIGINT
+            tableName: wallets_wallet_limits
+  - changeSet:
+      id: 1746194420370-25
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wallet_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: wallet_transactions_id
+                  type: BIGINT
+            tableName: wallets_wallet_transactions
+  - changeSet:
+      id: 1746194420370-26
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -517,7 +573,7 @@ databaseChangeLog:
             constraintName: uc_categorieswalletstransactions_walletstransactionswithcatego
             tableName: categories_wallets_transactions_with_category
   - changeSet:
-      id: 1746107061613-24
+      id: 1746194420370-27
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -526,7 +582,7 @@ databaseChangeLog:
             constraintName: uc_currencies_wallets_with_currency_walletswithcurrency
             tableName: currencies_wallets_with_currency
   - changeSet:
-      id: 1746107061613-25
+      id: 1746194420370-28
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -535,7 +591,7 @@ databaseChangeLog:
             constraintName: uc_currenciessavingsaccountswithcur_savingsaccountswithcurrency
             tableName: currencies_savings_accounts_with_currency
   - changeSet:
-      id: 1746107061613-26
+      id: 1746194420370-29
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -544,7 +600,7 @@ databaseChangeLog:
             constraintName: uc_limits_wallet
             tableName: limits
   - changeSet:
-      id: 1746107061613-27
+      id: 1746194420370-30
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -553,7 +609,34 @@ databaseChangeLog:
             constraintName: uc_roles_users_with_role_userswithrole
             tableName: roles_users_with_role
   - changeSet:
-      id: 1746107061613-28
+      id: 1746194420370-31
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: savings_transactions_id
+            constraintName: uc_savings_accounts_savings_transactions_savingstransactions
+            tableName: savings_accounts_savings_transactions
+  - changeSet:
+      id: 1746194420370-32
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: wallet_limits_id
+            constraintName: uc_wallets_wallet_limits_walletlimits
+            tableName: wallets_wallet_limits
+  - changeSet:
+      id: 1746194420370-33
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: wallet_transactions_id
+            constraintName: uc_wallets_wallet_transactions_wallettransactions
+            tableName: wallets_wallet_transactions
+  - changeSet:
+      id: 1746194420370-34
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -564,7 +647,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-29
+      id: 1746194420370-35
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -575,7 +658,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-30
+      id: 1746194420370-36
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -586,7 +669,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: wallets
   - changeSet:
-      id: 1746107061613-31
+      id: 1746194420370-37
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -597,7 +680,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: currencies
   - changeSet:
-      id: 1746107061613-32
+      id: 1746194420370-38
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -608,7 +691,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-33
+      id: 1746194420370-39
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -619,7 +702,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: savings_accounts
   - changeSet:
-      id: 1746107061613-34
+      id: 1746194420370-40
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -630,18 +713,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-35
-      author: Biwaby
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: wallet_id
-            baseTableName: savings_transactions
-            constraintName: FK_SAVINGS_TRANSACTIONS_ON_WALLET
-            referencedColumnNames: id
-            referencedTableName: wallets
-  - changeSet:
-      id: 1746107061613-36
+      id: 1746194420370-41
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -652,7 +724,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: roles
   - changeSet:
-      id: 1746107061613-37
+      id: 1746194420370-42
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -663,7 +735,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: currencies
   - changeSet:
-      id: 1746107061613-38
+      id: 1746194420370-43
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -674,7 +746,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-39
+      id: 1746194420370-44
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -685,7 +757,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: categories
   - changeSet:
-      id: 1746107061613-40
+      id: 1746194420370-45
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -696,7 +768,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1746107061613-41
+      id: 1746194420370-46
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -707,7 +779,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: wallets
   - changeSet:
-      id: 1746107061613-42
+      id: 1746194420370-47
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -718,7 +790,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: categories
   - changeSet:
-      id: 1746107061613-43
+      id: 1746194420370-48
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -729,7 +801,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: wallet_transactions
   - changeSet:
-      id: 1746107061613-44
+      id: 1746194420370-49
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -740,7 +812,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: currencies
   - changeSet:
-      id: 1746107061613-45
+      id: 1746194420370-50
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -751,7 +823,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: savings_accounts
   - changeSet:
-      id: 1746107061613-46
+      id: 1746194420370-51
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -762,7 +834,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: currencies
   - changeSet:
-      id: 1746107061613-47
+      id: 1746194420370-52
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -773,7 +845,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: wallets
   - changeSet:
-      id: 1746107061613-48
+      id: 1746194420370-53
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -784,7 +856,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: roles
   - changeSet:
-      id: 1746107061613-49
+      id: 1746194420370-54
       author: Biwaby
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -794,4 +866,70 @@ databaseChangeLog:
             constraintName: fk_rolusewitrol_on_user
             referencedColumnNames: id
             referencedTableName: users
+  - changeSet:
+      id: 1746194420370-55
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: savings_account_id
+            baseTableName: savings_accounts_savings_transactions
+            constraintName: fk_savaccsavtra_on_savings_account
+            referencedColumnNames: id
+            referencedTableName: savings_accounts
+  - changeSet:
+      id: 1746194420370-56
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: savings_transactions_id
+            baseTableName: savings_accounts_savings_transactions
+            constraintName: fk_savaccsavtra_on_savings_transaction
+            referencedColumnNames: id
+            referencedTableName: savings_transactions
+  - changeSet:
+      id: 1746194420370-57
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: wallet_limits_id
+            baseTableName: wallets_wallet_limits
+            constraintName: fk_walwallim_on_limit
+            referencedColumnNames: id
+            referencedTableName: limits
+  - changeSet:
+      id: 1746194420370-58
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: wallet_id
+            baseTableName: wallets_wallet_limits
+            constraintName: fk_walwallim_on_wallet
+            referencedColumnNames: id
+            referencedTableName: wallets
+  - changeSet:
+      id: 1746194420370-59
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: wallet_id
+            baseTableName: wallets_wallet_transactions
+            constraintName: fk_walwaltra_on_wallet
+            referencedColumnNames: id
+            referencedTableName: wallets
+  - changeSet:
+      id: 1746194420370-60
+      author: Biwaby
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: wallet_transactions_id
+            baseTableName: wallets_wallet_transactions
+            constraintName: fk_walwaltra_on_wallet_transaction
+            referencedColumnNames: id
+            referencedTableName: wallet_transactions
 

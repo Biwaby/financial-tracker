@@ -1,12 +1,14 @@
 package com.biwaby.financialtracker.entity;
 
 import com.biwaby.financialtracker.enums.SavingsAccountStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -24,6 +26,7 @@ public class SavingsAccount {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
@@ -51,12 +54,17 @@ public class SavingsAccount {
     )
     private BigDecimal currentAmount = BigDecimal.ZERO;
 
-    @Column(name = "deadline")
-    private LocalDate deadline;
+    @Column(name = "deadline", nullable = true)
+    private LocalDate deadlineDate;
 
     @Column(name = "status", nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
     private SavingsAccountStatus status;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = SavingsTransaction.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<SavingsTransaction> savingsTransactions;
 
     @Override
     public final boolean equals(Object o) {

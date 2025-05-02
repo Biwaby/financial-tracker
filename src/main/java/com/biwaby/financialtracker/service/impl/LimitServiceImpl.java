@@ -47,7 +47,7 @@ public class LimitServiceImpl implements LimitService {
         limitToCreate.setTargetAmount(dto.getTargetAmount());
         limitToCreate.setCreationDate(LocalDateTime.now());
         limitToCreate.setIsActive(Boolean.TRUE);
-
+        wallet.getWalletLimits().add(limitToCreate);
         return save(limitToCreate);
     }
 
@@ -150,6 +150,8 @@ public class LimitServiceImpl implements LimitService {
     @Transactional
     public void deleteById(User user, Long id) {
         Limit limitToDelete = getById(user, id);
+        Wallet holderWallet = limitToDelete.getWallet();
+        holderWallet.getWalletLimits().remove(limitToDelete);
         limitRepository.delete(limitToDelete);
     }
 }

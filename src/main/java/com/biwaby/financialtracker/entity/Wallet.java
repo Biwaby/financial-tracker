@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -42,6 +43,16 @@ public class Wallet {
     @ManyToOne
     @JoinColumn(name = "currency_id", referencedColumnName = "id", nullable = false)
     private Currency currency;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = WalletTransaction.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<WalletTransaction> walletTransactions;
+
+    @JsonIgnore
+    @OneToMany(targetEntity = Limit.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Limit> walletLimits;
 
     @Override
     public final boolean equals(Object o) {

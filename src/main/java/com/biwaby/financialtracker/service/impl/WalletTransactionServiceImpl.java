@@ -56,7 +56,7 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
         }
 
         category.getWalletsTransactionsWithCategory().add(transactionToCreate);
-
+        wallet.getWalletTransactions().add(transactionToCreate);
         return save(transactionToCreate);
     }
 
@@ -92,13 +92,14 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
                 transactionToUpdate.setType(WalletTransactionType.getTypeByValue(dto.getType()));
             }
             if (dto.getAmount() != null) {
-                if (dto.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                if (dto.getAmount().compareTo(BigDecimal.ZERO) >= 0) {
+                    transactionToUpdate.setAmount(dto.getAmount());
+                } else {
                     throw new ResponseException(
                             HttpStatus.BAD_REQUEST.value(),
-                            "<amount> must be equal or greater than zero"
+                            "The <amount> must be equal or greater than zero"
                     );
                 }
-                transactionToUpdate.setAmount(dto.getAmount());
             }
             if (dto.getTransactionDate() != null && !dto.getTransactionDate().trim().isEmpty()) {
                 transactionToUpdate.setTransactionDate(LocalDateTime.parse(dto.getTransactionDate(), DateTimeFormatter.ISO_DATE_TIME));
@@ -114,6 +115,10 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
     @Transactional
     public void deleteById(User user, Long id) {
         WalletTransaction transactionToDelete = getById(user, id);
+        Wallet holderWallet = transactionToDelete.getWallet();
+        Category holderCategory = transactionToDelete.getCategory();
+        holderWallet.getWalletTransactions().remove(transactionToDelete);
+        holderCategory.getWalletsTransactionsWithCategory().remove(transactionToDelete);
         walletTransactionRepository.delete(transactionToDelete);
     }
 }

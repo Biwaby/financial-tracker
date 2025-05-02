@@ -89,7 +89,7 @@ public class WalletTransactionController {
     public ResponseEntity<ObjectResponse> updateById(
             @RequestParam Long id,
             @RequestParam(required = false) Long categoryId,
-            @RequestBody(required = false) @Valid WalletTransactionUpdateDto dto
+            @RequestBody @Valid WalletTransactionUpdateDto dto
     ) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Category category = categoryService.getById(user, categoryId);
