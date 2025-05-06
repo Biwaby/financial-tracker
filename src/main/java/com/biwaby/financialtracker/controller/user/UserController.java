@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.controller.user;
 
-import com.biwaby.financialtracker.dto.UserDto;
+import com.biwaby.financialtracker.dto.read.UserReadDto;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
 import jakarta.validation.constraints.Pattern;
@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/get-self")
     public ResponseEntity<ObjectResponse> getSelf() {
-        UserDto userDto = userService.getSelfDto();
+        UserReadDto userDto = userService.getSelfDto();
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s>".formatted(userDto.getUsername()),
                 HttpStatus.OK.toString(),
@@ -63,7 +63,7 @@ public class UserController {
 
     @DeleteMapping("/delete-self")
     public ResponseEntity<ObjectResponse> deleteSelf() {
-        UserDto userDto = userService.getSelfDto();
+        UserReadDto userDto = userService.getSelfDto();
         userService.deleteSelf();
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(userDto.getUsername()),

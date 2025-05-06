@@ -1,12 +1,10 @@
 package com.biwaby.financialtracker.service.impl;
 
-import com.biwaby.financialtracker.dto.UserDto;
-import com.biwaby.financialtracker.entity.Role;
-import com.biwaby.financialtracker.entity.User;
+import com.biwaby.financialtracker.dto.read.UserReadDto;
+import com.biwaby.financialtracker.entity.*;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.mapper.UserMapper;
-import com.biwaby.financialtracker.repository.RoleRepository;
-import com.biwaby.financialtracker.repository.UserRepository;
+import com.biwaby.financialtracker.repository.*;
 import com.biwaby.financialtracker.service.UserService;
 import com.biwaby.financialtracker.util.PasswordEncoderUtil;
 import jakarta.transaction.Transactional;
@@ -27,6 +25,12 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final WalletTransactionRepository walletTransactionRepository;
+    private final CategoryRepository categoryRepository;
+    private final LimitRepository limitRepository;
+    private final WalletRepository walletRepository;
+    private final SavingsTransactionRepository savingsTransactionRepository;
+    private final SavingsAccountRepository savingsAccountRepository;
 
     @Override
     @Transactional
@@ -49,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(Long id) {
+    public UserReadDto getById(Long id) {
         return userMapper.toDto(
                 userRepository.findById(id).orElseThrow(
                         () -> new ResponseException(
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getByUsername(String username) {
+    public UserReadDto getByUsername(String username) {
         return userMapper.toDto(
                 userRepository.findByUsername(username).orElseThrow(
                         () -> new ResponseException(
@@ -99,12 +103,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getSelfDto() {
+    public UserReadDto getSelfDto() {
         return userMapper.toDto(getCurrentUserEntity());
     }
 
     @Override
-    public List<UserDto> getAll(Integer pageSize, Integer pageNumber) {
+    public List<UserReadDto> getAll(Integer pageSize, Integer pageNumber) {
         return userRepository.findAll(PageRequest.of(pageNumber, pageSize))
                 .get()
                 .map(userMapper::toDto)
@@ -113,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUsername(String username) {
+    public UserReadDto updateUsername(String username) {
         User userToUpdate = getCurrentUserEntity();
         if (username != null && !username.trim().isEmpty()) {
             userToUpdate.setUsername(username);
@@ -123,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updatePassword(String password) {
+    public UserReadDto updatePassword(String password) {
         User userToUpdate = getCurrentUserEntity();
         if (password != null && !password.trim().isEmpty()) {
             userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder().encode(password));
@@ -133,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto updateUserRole(Long userId, String authority) {
+    public UserReadDto updateUserRole(Long userId, String authority) {
         User userToUpdate = getEntityById(userId);
         Role newRole = roleRepository.findByName(authority).orElseThrow(
                 () -> new ResponseException(
@@ -155,6 +159,8 @@ public class UserServiceImpl implements UserService {
                         "User with id <%s> is not found".formatted(id)
                 )
         );
+        deleteUserData(userToDelete);
+        userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);
     }
 
@@ -167,6 +173,8 @@ public class UserServiceImpl implements UserService {
                         "User with username <%s> is not found".formatted(username)
                 )
         );
+        deleteUserData(userToDelete);
+        userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);
     }
 
@@ -174,7 +182,27 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteSelf() {
         User userToDelete = getCurrentUserEntity();
+        deleteUserData(userToDelete);
+        userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);
+    }
+
+    private void deleteUserData(User user) {
+        List<Category> categories = user.getCategories();
+        List<Limit> limits = user.getLimits();
+        List<WalletTransaction> walletTransactions = user.getWalletTransactions();
+        List<Wallet> wallets = user.getWallets();
+        List<SavingsTransaction> savingsTransactions = user.getSavingsTransactions();
+        List<SavingsAccount> savingsAccounts = user.getSavingsAccounts();
+
+        walletTransactionRepository.deleteAll(walletTransactions);
+        categoryRepository.deleteAll(categories);
+        limitRepository.deleteAll(limits);
+        wallets.forEach(wallet -> wallet.getCurrency().getWalletsWithCurrency().remove(wallet));
+        walletRepository.deleteAll(wallets);
+        savingsTransactionRepository.deleteAll(savingsTransactions);
+        savingsAccounts.forEach(account -> account.getCurrency().getSavingsAccountsWithCurrency().remove(account));
+        savingsAccountRepository.deleteAll(savingsAccounts);
     }
 
     @Override

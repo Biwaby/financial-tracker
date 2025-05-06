@@ -6,12 +6,12 @@ import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.entity.Category;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.service.CategoryService;
+import com.biwaby.financialtracker.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Category category
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category added successfully",
                 HttpStatus.OK.toString(),
@@ -40,7 +41,7 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -54,7 +55,7 @@ public class CategoryController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Categories list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
@@ -76,7 +77,7 @@ public class CategoryController {
             @RequestParam Long id,
             @RequestBody @Valid CategoryUpdateDto dto
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -89,7 +90,7 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Category deletedCategory = categoryService.getById(user, id);
         categoryService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

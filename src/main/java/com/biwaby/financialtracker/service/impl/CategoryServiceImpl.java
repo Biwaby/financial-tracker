@@ -42,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
             );
         }
         category.setUser(user);
+        category.getUser().getCategories().add(category);
         return save(category);
     }
 

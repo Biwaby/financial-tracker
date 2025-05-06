@@ -1,6 +1,6 @@
 package com.biwaby.financialtracker.controller.admin;
 
-import com.biwaby.financialtracker.dto.UserDto;
+import com.biwaby.financialtracker.dto.read.UserReadDto;
 import com.biwaby.financialtracker.dto.response.ObjectListResponse;
 import com.biwaby.financialtracker.dto.response.ObjectResponse;
 import com.biwaby.financialtracker.service.UserService;
@@ -82,7 +82,7 @@ public class UserAdminController {
     public ResponseEntity<ObjectResponse> deleteUserById(
             @RequestParam Long id
     ) {
-        UserDto deletedUser = userService.getById(id);
+        UserReadDto deletedUser = userService.getById(id);
         userService.deleteById(id);
         ObjectResponse responseBody = new ObjectResponse(
                 "User with id <%s> has been successfully deleted".formatted(id),
@@ -96,7 +96,7 @@ public class UserAdminController {
     public ResponseEntity<ObjectResponse> deleteUserByUsername(
             @RequestParam String username
     ) {
-        UserDto deletedUser = userService.getByUsername(username);
+        UserReadDto deletedUser = userService.getByUsername(username);
         userService.deleteByUsername(username);
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(username),

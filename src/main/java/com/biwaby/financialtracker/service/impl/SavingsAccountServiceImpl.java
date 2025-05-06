@@ -5,13 +5,11 @@ import com.biwaby.financialtracker.dto.create.SavingsTransactionCreateDto;
 import com.biwaby.financialtracker.dto.update.SavingsAccountUpdateDto;
 import com.biwaby.financialtracker.entity.Currency;
 import com.biwaby.financialtracker.entity.SavingsAccount;
-import com.biwaby.financialtracker.entity.SavingsTransaction;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.enums.SavingsAccountStatus;
 import com.biwaby.financialtracker.enums.SavingsTransactionType;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.SavingsAccountRepository;
-import com.biwaby.financialtracker.repository.SavingsTransactionRepository;
 import com.biwaby.financialtracker.service.CurrencyService;
 import com.biwaby.financialtracker.service.SavingsAccountService;
 import com.biwaby.financialtracker.service.SavingsTransactionService;
@@ -30,7 +28,6 @@ import java.util.List;
 public class SavingsAccountServiceImpl implements SavingsAccountService {
 
     private final SavingsAccountRepository savingsAccountRepository;
-    private final SavingsTransactionRepository savingsTransactionRepository;
     private final CurrencyService currencyService;
     private final SavingsTransactionService savingsTransactionService;
 
@@ -64,8 +61,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
         }
 
         accountToCreate.setStatus(SavingsAccountStatus.ACTIVE);
-
         accountCurrency.getSavingsAccountsWithCurrency().add(accountToCreate);
+        accountToCreate.getUser().getSavingsAccounts().add(accountToCreate);
         return save(accountToCreate);
     }
 
@@ -193,10 +190,8 @@ public class SavingsAccountServiceImpl implements SavingsAccountService {
     @Transactional
     public void deleteById(User user, Long id) {
         SavingsAccount accountToDelete = getById(user, id);
-        List<SavingsTransaction> transactions = accountToDelete.getSavingsTransactions();
         Currency holderCurrency = accountToDelete.getCurrency();
         holderCurrency.getSavingsAccountsWithCurrency().remove(accountToDelete);
-        savingsTransactionRepository.deleteAll(transactions);
         savingsAccountRepository.delete(accountToDelete);
     }
 }

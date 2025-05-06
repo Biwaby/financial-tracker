@@ -1,4 +1,4 @@
-package com.biwaby.financialtracker.dto;
+package com.biwaby.financialtracker.dto.read;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto implements Serializable {
+public class UserReadDto implements Serializable {
 
     private Long id;
     private String username;

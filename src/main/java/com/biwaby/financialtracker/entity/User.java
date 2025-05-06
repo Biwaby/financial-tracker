@@ -1,5 +1,6 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -43,6 +44,72 @@ public class User implements UserDetails {
 
     @Column(name = "registered_at", nullable = false)
     private LocalDateTime registeredAt;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Category.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Category> categories;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Limit.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Limit> limits;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = WalletTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<WalletTransaction> walletTransactions;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Wallet.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Wallet> wallets;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = SavingsTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<SavingsTransaction> savingsTransactions;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = SavingsAccount.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<SavingsAccount> savingsAccounts;
 
     @Override
     public final boolean equals(Object o) {

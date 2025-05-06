@@ -50,6 +50,7 @@ public class SavingsTransactionServiceImpl implements SavingsTransactionService 
         }
 
         savingsAccount.getSavingsTransactions().add(transactionToCreate);
+        transactionToCreate.getUser().getSavingsTransactions().add(transactionToCreate);
         return save(transactionToCreate);
     }
 

@@ -45,14 +45,31 @@ public class Wallet {
     private Currency currency;
 
     @JsonIgnore
-    @OneToMany(targetEntity = WalletTransaction.class, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "wallet",
+            targetEntity = WalletTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     @ToString.Exclude
     private List<WalletTransaction> walletTransactions;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Limit.class, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<Limit> walletLimits;
+    @OneToOne(
+            targetEntity = Limit.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(
+            name = "limit_id",
+            referencedColumnName = "id",
+            unique = true,
+            nullable = true
+    )
+    private Limit walletLimit;
 
     @Override
     public final boolean equals(Object o) {

@@ -9,6 +9,7 @@ import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.entity.Wallet;
 import com.biwaby.financialtracker.entity.WalletTransaction;
 import com.biwaby.financialtracker.service.CategoryService;
+import com.biwaby.financialtracker.service.UserService;
 import com.biwaby.financialtracker.service.WalletService;
 import com.biwaby.financialtracker.service.WalletTransactionService;
 import jakarta.validation.Valid;
@@ -16,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ public class WalletTransactionController {
     private final WalletTransactionService walletTransactionService;
     private final WalletService walletService;
     private final CategoryService categoryService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<ObjectResponse> create(
@@ -36,7 +37,7 @@ public class WalletTransactionController {
             @RequestParam Long categoryId,
             @RequestBody @Valid WalletTransactionCreateDto dto
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Wallet wallet = walletService.getById(user, walletId);
         Category category = categoryService.getById(user, categoryId);
         ObjectResponse responseBody = new ObjectResponse(
@@ -51,7 +52,7 @@ public class WalletTransactionController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -66,7 +67,7 @@ public class WalletTransactionController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Wallet transactions list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
@@ -91,7 +92,7 @@ public class WalletTransactionController {
             @RequestParam(required = false) Long categoryId,
             @RequestBody @Valid WalletTransactionUpdateDto dto
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Category category = categoryService.getById(user, categoryId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet transaction with id <%s> has been successfully edited".formatted(id),
@@ -105,7 +106,7 @@ public class WalletTransactionController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         WalletTransaction deletedTransaction = walletTransactionService.getById(user, id);
         walletTransactionService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

@@ -8,12 +8,12 @@ import com.biwaby.financialtracker.entity.Limit;
 import com.biwaby.financialtracker.entity.User;
 import com.biwaby.financialtracker.entity.Wallet;
 import com.biwaby.financialtracker.service.LimitService;
+import com.biwaby.financialtracker.service.UserService;
 import com.biwaby.financialtracker.service.WalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
@@ -25,13 +25,14 @@ public class LimitController {
 
     private final LimitService limitService;
     private final WalletService walletService;
+    private final UserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<ObjectResponse> create(
             @RequestParam Long walletId,
             @RequestBody @Valid LimitCreateDto dto
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit created successfully",
@@ -45,7 +46,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -58,7 +59,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> getByWalletId(
             @RequestParam Long walletId
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit for wallet with walletId <%s>".formatted(walletId),
@@ -70,7 +71,7 @@ public class LimitController {
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Limits list",
                 HttpStatus.OK.toString(),
@@ -87,7 +88,7 @@ public class LimitController {
             @RequestParam Long id,
             @RequestBody @Valid LimitUpdateDto dto
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -100,7 +101,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getCurrentUserEntity();
         Limit deletedLimit = limitService.getById(user, id);
         limitService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

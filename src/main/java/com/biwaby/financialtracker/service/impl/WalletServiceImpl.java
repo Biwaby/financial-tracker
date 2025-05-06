@@ -10,7 +10,6 @@ import com.biwaby.financialtracker.enums.WalletTransactionType;
 import com.biwaby.financialtracker.exception.ResponseException;
 import com.biwaby.financialtracker.repository.LimitRepository;
 import com.biwaby.financialtracker.repository.WalletRepository;
-import com.biwaby.financialtracker.repository.WalletTransactionRepository;
 import com.biwaby.financialtracker.service.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import java.util.List;
 public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
-    private final WalletTransactionRepository walletTransactionRepository;
     private final LimitRepository limitRepository;
     private final CurrencyService currencyService;
     private final WalletTransactionService walletTransactionService;
@@ -60,6 +58,7 @@ public class WalletServiceImpl implements WalletService {
         walletToCreate.setCurrency(walletCurrency);
         walletCurrency.getWalletsWithCurrency().add(walletToCreate);
 
+        walletToCreate.getUser().getWallets().add(walletToCreate);
         return save(walletToCreate);
     }
 
@@ -344,14 +343,13 @@ public class WalletServiceImpl implements WalletService {
     public void deleteById(User user, Long id) {
         Wallet walletToDelete = getById(user, id);
         List<WalletTransaction> transactions = walletToDelete.getWalletTransactions();
-        List<Limit> limits = walletToDelete.getWalletLimits();
+        Limit holderLimit = walletToDelete.getWalletLimit();
 
         transactions.forEach(transaction -> transaction.getCategory().getWalletsTransactionsWithCategory().remove(transaction));
 
         Currency holderCurrency = walletToDelete.getCurrency();
         holderCurrency.getWalletsWithCurrency().remove(walletToDelete);
-        limitRepository.deleteAll(limits);
-        walletTransactionRepository.deleteAll(transactions);
+        limitRepository.delete(holderLimit);
         walletRepository.delete(walletToDelete);
     }
 }

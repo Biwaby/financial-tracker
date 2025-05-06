@@ -57,6 +57,7 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
 
         category.getWalletsTransactionsWithCategory().add(transactionToCreate);
         wallet.getWalletTransactions().add(transactionToCreate);
+        transactionToCreate.getUser().getWalletTransactions().add(transactionToCreate);
         return save(transactionToCreate);
     }
 

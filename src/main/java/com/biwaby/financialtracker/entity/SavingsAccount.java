@@ -62,7 +62,13 @@ public class SavingsAccount {
     private SavingsAccountStatus status;
 
     @JsonIgnore
-    @OneToMany(targetEntity = SavingsTransaction.class, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "savingsAccount",
+            targetEntity = SavingsTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     @ToString.Exclude
     private List<SavingsTransaction> savingsTransactions;
 
