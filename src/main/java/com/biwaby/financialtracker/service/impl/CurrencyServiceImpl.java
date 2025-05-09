@@ -97,7 +97,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     public Currency update(Long id, CurrencyUpdateDto dto) {
         Currency currencyToUpdate = getById(id);
 
-        if (dto.getCode() != null && !dto.getCode().isEmpty()) {
+        if (dto.getCode() != null && !dto.getCode().trim().isEmpty()) {
             currencyToUpdate.setCode(dto.getCode());
         }
         if (dto.getLetterCode() != null && !dto.getLetterCode().trim().isEmpty()) {
@@ -107,10 +107,10 @@ public class CurrencyServiceImpl implements CurrencyService {
             if (dto.getLetterCode().equals("NON")) {
                 throw new ResponseException(
                         HttpStatus.BAD_REQUEST.value(),
-                        "Currency with letter code <%s> cannot be updated".formatted(currencyLetterCode)
+                        "Currency with letter code <%s> cannot be updated".formatted(dto.getLetterCode())
                 );
             }
-            if (currencyRepository.existsByLetterCode(currencyLetterCode)) {
+            if (currencyRepository.existsByLetterCode(dto.getLetterCode())) {
                 throw new ResponseException(
                         HttpStatus.BAD_REQUEST.value(),
                         "Currency with letter code <%s> already exists".formatted(dto.getLetterCode())
@@ -151,21 +151,19 @@ public class CurrencyServiceImpl implements CurrencyService {
             );
         }
 
-        setNonCurrencyForWallets(walletsWithDeletedCurrency);
-        setNonCurrencyForSavingsAccounts(savingsAccountsWithDeletedCurrency);
+        setNonCurrencyForWallets(walletsWithDeletedCurrency, nonCurrency);
+        setNonCurrencyForSavingsAccounts(savingsAccountsWithDeletedCurrency, nonCurrency);
         currencyRepository.delete(currencyToDelete);
     }
 
-    private void setNonCurrencyForWallets(List<Wallet> wallets) {
-        Currency nonCurrency = getByLetterCode("NON");
+    private void setNonCurrencyForWallets(List<Wallet> wallets, Currency nonCurrency) {
         if (!wallets.isEmpty()) {
             wallets.forEach(wallet -> wallet.setCurrency(nonCurrency));
             walletRepository.saveAll(wallets);
         }
     }
 
-    private void setNonCurrencyForSavingsAccounts(List<SavingsAccount> savingsAccounts) {
-        Currency nonCurrency = getByLetterCode("NON");
+    private void setNonCurrencyForSavingsAccounts(List<SavingsAccount> savingsAccounts, Currency nonCurrency) {
         if (!savingsAccounts.isEmpty()) {
             savingsAccounts.forEach(savingsAccount -> savingsAccount.setCurrency(nonCurrency));
             savingsAccountRepository.saveAll(savingsAccounts);
