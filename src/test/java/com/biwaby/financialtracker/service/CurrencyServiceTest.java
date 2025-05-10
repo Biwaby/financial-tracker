@@ -83,7 +83,7 @@ public class CurrencyServiceTest {
                 .isInstanceOf(ResponseException.class)
                 .hasMessageContaining(EXISTING_CURRENCY.getCode());
         verify(currencyRepository, times(1)).existsByCode(any(String.class));
-        verify(currencyRepository, never()).save(any());
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -184,13 +184,13 @@ public class CurrencyServiceTest {
     }
 
     @Test
-    public void getAll_returnsAllCurrencies() {
+    public void getAll_returnsAllFoundedCurrencies() {
         doReturn(List.of(EXISTING_CURRENCY)).when(currencyRepository).findAll();
 
         List<Currency> currencies = currencyService.getAll();
 
         assertNotNull(currencies);
-        assertThat(currencies.size()).isEqualTo(1);
+        assertThat(currencies).hasSize(1);
         assertThat(currencies.getFirst().getId()).isEqualTo(EXISTING_CURRENCY.getId());
         verify(currencyRepository, times(1)).findAll();
         verifyNoMoreInteractions(currencyRepository);
@@ -225,13 +225,13 @@ public class CurrencyServiceTest {
 
     @Test
     public void update_currencyNotExists_throwsException() {
-        CurrencyUpdateDto updateDto = new CurrencyUpdateDto();
         doReturn(Optional.empty()).when(currencyRepository).findById(EXISTING_CURRENCY.getId());
 
-        assertThatThrownBy(() -> currencyService.update(EXISTING_CURRENCY.getId(), updateDto))
+        assertThatThrownBy(() -> currencyService.update(EXISTING_CURRENCY.getId(), null))
                 .isInstanceOf(ResponseException.class)
                 .hasMessageContaining(EXISTING_CURRENCY.getId().toString());
         verify(currencyRepository, times(1)).findById(any(Long.class));
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -244,6 +244,7 @@ public class CurrencyServiceTest {
                 .isInstanceOf(ResponseException.class)
                 .hasMessageContaining(updateDto.getLetterCode());
         verify(currencyRepository, times(1)).findById(any(Long.class));
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -258,6 +259,7 @@ public class CurrencyServiceTest {
                 .hasMessageContaining(updateDto.getLetterCode());
         verify(currencyRepository, times(1)).findById(any(Long.class));
         verify(currencyRepository, times(1)).existsByLetterCode(any(String.class));
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -270,6 +272,7 @@ public class CurrencyServiceTest {
                 .isInstanceOf(ResponseException.class)
                 .hasMessageContaining(updateDto.getName());
         verify(currencyRepository, times(1)).findById(any(Long.class));
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -284,6 +287,7 @@ public class CurrencyServiceTest {
                 .hasMessageContaining(updateDto.getName());
         verify(currencyRepository, times(1)).findById(any(Long.class));
         verify(currencyRepository, times(1)).existsByName(any(String.class));
+        verify(currencyRepository, never()).save(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -302,10 +306,10 @@ public class CurrencyServiceTest {
         verify(currencyRepository, times(1)).delete(any(Currency.class));
         assertThatList(EXISTING_CURRENCY.getWalletsWithCurrency())
                 .extracting(Wallet::getCurrency)
-                        .containsOnly(NON_CURRENCY);
+                .containsOnly(NON_CURRENCY);
         assertThatList(EXISTING_CURRENCY.getSavingsAccountsWithCurrency())
                 .extracting(SavingsAccount::getCurrency)
-                        .containsOnly(NON_CURRENCY);
+                .containsOnly(NON_CURRENCY);
         verify(walletRepository, times(1)).saveAll(any(List.class));
         verify(savingsAccountRepository, times(1)).saveAll(any(List.class));
         verifyNoMoreInteractions(currencyRepository, walletRepository, savingsAccountRepository);
@@ -319,6 +323,7 @@ public class CurrencyServiceTest {
                 .isInstanceOf(ResponseException.class)
                 .hasMessageContaining(EXISTING_CURRENCY.getId().toString());
         verify(currencyRepository, times(1)).findById(any(Long.class));
+        verify(currencyRepository, never()).delete(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 
@@ -332,6 +337,7 @@ public class CurrencyServiceTest {
                 .hasMessageContaining(NON_CURRENCY.getId().toString());
         verify(currencyRepository, times(1)).findById(any(Long.class));
         verify(currencyRepository, times(1)).findByLetterCode(any(String.class));
+        verify(currencyRepository, never()).delete(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
     }
 }

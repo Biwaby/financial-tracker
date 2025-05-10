@@ -71,7 +71,7 @@ public class RoleServiceImpl implements RoleService {
         if (roleToUpdate.getName().equals("USER")) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
-                    "Role with name <%s> cannot be updated".formatted(role.getName())
+                    "Role with name <%s> cannot be updated".formatted(roleToUpdate.getName())
             );
         }
         if (roleRepository.existsByName(role.getName().toUpperCase())) {
@@ -88,22 +88,21 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void deleteById(Long id) {
         Role roleToDelete = getById(id);
-        Role userRole = getByAuthority("USER");
+        Role defaultUserRole = getByAuthority("USER");
         List<User> usersWithDeletedRole = roleToDelete.getUsersWithRole();
 
-        if (roleToDelete.equals(userRole)) {
+        if (roleToDelete.equals(defaultUserRole)) {
             throw new ResponseException(
                     HttpStatus.BAD_REQUEST.value(),
                     "Role with name <%s> cannot be deleted".formatted(roleToDelete.getName())
             );
         }
 
-        setUserRoleDefault(usersWithDeletedRole);
+        setUserRoleDefault(usersWithDeletedRole, defaultUserRole);
         roleRepository.delete(roleToDelete);
     }
 
-    private void setUserRoleDefault(List<User> users) {
-        Role defaultRole = getByAuthority("USER");
+    private void setUserRoleDefault(List<User> users, Role defaultRole) {
         if (!users.isEmpty()) {
             users.forEach(user -> user.setRole(defaultRole));
             userRepository.saveAll(users);
