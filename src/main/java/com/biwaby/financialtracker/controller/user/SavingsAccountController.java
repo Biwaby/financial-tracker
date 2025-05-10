@@ -32,7 +32,7 @@ public class SavingsAccountController {
     public ResponseEntity<ObjectResponse> createAccount(
             @RequestBody @Valid SavingsAccountCreateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings account created successfully",
                 HttpStatus.OK.toString(),
@@ -45,7 +45,7 @@ public class SavingsAccountController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings account with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -56,7 +56,7 @@ public class SavingsAccountController {
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Savings accounts list",
                 HttpStatus.OK.toString(),
@@ -72,7 +72,7 @@ public class SavingsAccountController {
             @RequestParam Long id,
             @RequestParam BigDecimal amount
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         SavingsAccount account = savingsAccountService.getById(user, id);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully deposited to the savings account (with id <%s>) balance".formatted(amount, account.getCurrency().getLetterCode(), id),
@@ -87,7 +87,7 @@ public class SavingsAccountController {
             @RequestParam Long id,
             @RequestBody @Valid SavingsAccountUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings account with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -102,7 +102,7 @@ public class SavingsAccountController {
             @RequestParam String currencyCode
     ) {
         Currency currency = currencyService.getByCode(currencyCode);
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Currency for savings account with id <%s> has been successfully changed".formatted(id),
                 HttpStatus.OK.toString(),
@@ -115,7 +115,7 @@ public class SavingsAccountController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         SavingsAccount deletedAccount = savingsAccountService.getById(user, id);
         savingsAccountService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

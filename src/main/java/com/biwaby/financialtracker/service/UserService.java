@@ -10,11 +10,11 @@ public interface UserService {
 
     User save(User user);
     User create(User user);
-    UserReadDto getById(Long id);
-    UserReadDto getByUsername(String username);
     User getEntityById(Long id);
     User getEntityByUsername(String username);
-    User getCurrentUserEntity();
+    User getSelfEntity();
+    UserReadDto getDtoById(Long id);
+    UserReadDto getDtoByUsername(String username);
     UserReadDto getSelfDto();
     List<UserReadDto> getAll(Integer pageSize, Integer pageNumber);
     UserReadDto updateUsername(String username);

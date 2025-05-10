@@ -27,7 +27,7 @@ public class UserAdminController {
         ObjectResponse responseBody = new ObjectResponse(
                 "User with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
-                userService.getById(id)
+                userService.getDtoById(id)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -39,7 +39,7 @@ public class UserAdminController {
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s>".formatted(username),
                 HttpStatus.OK.toString(),
-                userService.getByUsername(username)
+                userService.getDtoByUsername(username)
         );
         return ResponseEntity.ok(responseBody);
     }
@@ -82,7 +82,7 @@ public class UserAdminController {
     public ResponseEntity<ObjectResponse> deleteUserById(
             @RequestParam Long id
     ) {
-        UserReadDto deletedUser = userService.getById(id);
+        UserReadDto deletedUser = userService.getDtoById(id);
         userService.deleteById(id);
         ObjectResponse responseBody = new ObjectResponse(
                 "User with id <%s> has been successfully deleted".formatted(id),
@@ -96,7 +96,7 @@ public class UserAdminController {
     public ResponseEntity<ObjectResponse> deleteUserByUsername(
             @RequestParam String username
     ) {
-        UserReadDto deletedUser = userService.getByUsername(username);
+        UserReadDto deletedUser = userService.getDtoByUsername(username);
         userService.deleteByUsername(username);
         ObjectResponse responseBody = new ObjectResponse(
                 "User with username <%s> has been successfully deleted".formatted(username),

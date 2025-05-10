@@ -53,30 +53,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserReadDto getById(Long id) {
-        return userMapper.toDto(
-                userRepository.findById(id).orElseThrow(
-                        () -> new ResponseException(
-                                HttpStatus.NOT_FOUND.value(),
-                                "User with id <%s> is not found".formatted(id)
-                        )
-                )
-        );
-    }
-
-    @Override
-    public UserReadDto getByUsername(String username) {
-        return userMapper.toDto(
-                userRepository.findByUsername(username).orElseThrow(
-                        () -> new ResponseException(
-                                HttpStatus.NOT_FOUND.value(),
-                                "User with username <%s> is not found".formatted(username)
-                        )
-                )
-        );
-    }
-
-    @Override
     public User getEntityById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ResponseException(
@@ -97,14 +73,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getCurrentUserEntity() {
+    public User getSelfEntity() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getEntityByUsername(username);
     }
 
     @Override
+    public UserReadDto getDtoById(Long id) {
+        return userMapper.toDto(getEntityById(id));
+    }
+
+    @Override
+    public UserReadDto getDtoByUsername(String username) {
+        return userMapper.toDto(getEntityByUsername(username));
+    }
+
+    @Override
     public UserReadDto getSelfDto() {
-        return userMapper.toDto(getCurrentUserEntity());
+        return userMapper.toDto(getSelfEntity());
     }
 
     @Override
@@ -118,8 +104,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserReadDto updateUsername(String username) {
-        User userToUpdate = getCurrentUserEntity();
+        User userToUpdate = getSelfEntity();
         if (username != null && !username.trim().isEmpty()) {
+            if (userRepository.existsByUsername(username)) {
+                throw new ResponseException(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "User with username <%s> already exists".formatted(username)
+                );
+            }
             userToUpdate.setUsername(username);
         }
         return userMapper.toDto(save(userToUpdate));
@@ -128,7 +120,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserReadDto updatePassword(String password) {
-        User userToUpdate = getCurrentUserEntity();
+        User userToUpdate = getSelfEntity();
         if (password != null && !password.trim().isEmpty()) {
             userToUpdate.setPassword(PasswordEncoderUtil.getPasswordEncoder().encode(password));
         }
@@ -153,12 +145,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        User userToDelete = userRepository.findById(id).orElseThrow(
-                () -> new ResponseException(
-                        HttpStatus.NOT_FOUND.value(),
-                        "User with id <%s> is not found".formatted(id)
-                )
-        );
+        User userToDelete = getEntityById(id);
         deleteUserData(userToDelete);
         userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);
@@ -167,12 +154,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteByUsername(String username) {
-        User userToDelete = userRepository.findByUsername(username).orElseThrow(
-                () -> new ResponseException(
-                        HttpStatus.NOT_FOUND.value(),
-                        "User with username <%s> is not found".formatted(username)
-                )
-        );
+        User userToDelete = getEntityByUsername(username);
         deleteUserData(userToDelete);
         userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);
@@ -181,7 +163,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteSelf() {
-        User userToDelete = getCurrentUserEntity();
+        User userToDelete = getSelfEntity();
         deleteUserData(userToDelete);
         userToDelete.getRole().getUsersWithRole().remove(userToDelete);
         userRepository.delete(userToDelete);

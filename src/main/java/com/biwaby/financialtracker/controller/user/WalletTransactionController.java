@@ -37,7 +37,7 @@ public class WalletTransactionController {
             @RequestParam Long categoryId,
             @RequestBody @Valid WalletTransactionCreateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Wallet wallet = walletService.getById(user, walletId);
         Category category = categoryService.getById(user, categoryId);
         ObjectResponse responseBody = new ObjectResponse(
@@ -52,7 +52,7 @@ public class WalletTransactionController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -67,7 +67,7 @@ public class WalletTransactionController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Wallet transactions list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
@@ -92,7 +92,7 @@ public class WalletTransactionController {
             @RequestParam(required = false) Long categoryId,
             @RequestBody @Valid WalletTransactionUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Category category = categoryService.getById(user, categoryId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet transaction with id <%s> has been successfully edited".formatted(id),
@@ -106,7 +106,7 @@ public class WalletTransactionController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         WalletTransaction deletedTransaction = walletTransactionService.getById(user, id);
         walletTransactionService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

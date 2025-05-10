@@ -28,7 +28,7 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> create(
             @RequestBody @Valid Category category
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category added successfully",
                 HttpStatus.OK.toString(),
@@ -41,7 +41,7 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -55,7 +55,7 @@ public class CategoryController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Categories list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
                 HttpStatus.OK.toString(),
@@ -77,7 +77,7 @@ public class CategoryController {
             @RequestParam Long id,
             @RequestBody @Valid CategoryUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Category with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -90,7 +90,7 @@ public class CategoryController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Category deletedCategory = categoryService.getById(user, id);
         categoryService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

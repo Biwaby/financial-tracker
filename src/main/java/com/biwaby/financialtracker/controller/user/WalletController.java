@@ -33,7 +33,7 @@ public class WalletController {
     public ResponseEntity<ObjectResponse> createWallet(
             @RequestBody @Valid WalletCreateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet created successfully",
                 HttpStatus.OK.toString(),
@@ -46,7 +46,7 @@ public class WalletController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -57,7 +57,7 @@ public class WalletController {
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Wallets list",
                 HttpStatus.OK.toString(),
@@ -74,7 +74,7 @@ public class WalletController {
             @RequestParam Long categoryId,
             @RequestParam BigDecimal amount
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Category category = categoryService.getById(user, categoryId);
         Wallet wallet = walletService.deposit(user, id, category, amount);
         ObjectResponse responseBody = new ObjectResponse(
@@ -91,7 +91,7 @@ public class WalletController {
             @RequestParam Long categoryId,
             @RequestParam BigDecimal amount
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Category category = categoryService.getById(user, categoryId);
         Wallet wallet = walletService.withdraw(user, id, category, amount);
         ObjectResponse responseBody = new ObjectResponse(
@@ -108,7 +108,7 @@ public class WalletController {
             @RequestParam Long targetWalletId,
             @RequestParam BigDecimal amount
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Pair<Wallet, Wallet> wallets = walletService.transferToWallet(user, senderWalletId, targetWalletId, amount);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully transferred from the wallet (with id <%s>) to the wallet (with id <%s>)"
@@ -125,7 +125,7 @@ public class WalletController {
             @RequestParam Long targetSavingsAccountId,
             @RequestParam BigDecimal amount
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Pair<Wallet, SavingsAccount> ss = walletService.transferToSavingsAccount(user, senderWalletId, targetSavingsAccountId, amount);
         ObjectResponse responseBody = new ObjectResponse(
                 "The amount of <%s %s> has been successfully transferred from the wallet (with id <%s>) to the savings account (with id <%s>)"
@@ -141,7 +141,7 @@ public class WalletController {
             @RequestParam Long id,
             @RequestBody @Valid WalletUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Wallet with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -156,7 +156,7 @@ public class WalletController {
             @RequestParam String currencyCode
     ) {
         Currency currency = currencyService.getByCode(currencyCode);
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Currency for wallet with id <%s> has been successfully changed".formatted(id),
                 HttpStatus.OK.toString(),
@@ -169,7 +169,7 @@ public class WalletController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Wallet deletedWallet = walletService.getById(user, id);
         walletService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

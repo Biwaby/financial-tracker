@@ -32,7 +32,7 @@ public class LimitController {
             @RequestParam Long walletId,
             @RequestBody @Valid LimitCreateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit created successfully",
@@ -46,7 +46,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -59,7 +59,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> getByWalletId(
             @RequestParam Long walletId
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Wallet wallet = walletService.getById(user, walletId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit for wallet with walletId <%s>".formatted(walletId),
@@ -71,7 +71,7 @@ public class LimitController {
 
     @GetMapping("/get-all")
     public ResponseEntity<ObjectListResponse> getAll() {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Limits list",
                 HttpStatus.OK.toString(),
@@ -88,7 +88,7 @@ public class LimitController {
             @RequestParam Long id,
             @RequestBody @Valid LimitUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Limit with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -101,7 +101,7 @@ public class LimitController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         Limit deletedLimit = limitService.getById(user, id);
         limitService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(

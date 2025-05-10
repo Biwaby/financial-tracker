@@ -33,7 +33,7 @@ public class SavingsTransactionController {
             @RequestParam Long savingsAccountId,
             @RequestBody @Valid SavingsTransactionCreateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         SavingsAccount account = savingsAccountService.getById(user, savingsAccountId);
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction created successfully",
@@ -47,7 +47,7 @@ public class SavingsTransactionController {
     public ResponseEntity<ObjectResponse> getById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction with id <%s>".formatted(id),
                 HttpStatus.OK.toString(),
@@ -62,7 +62,7 @@ public class SavingsTransactionController {
             @RequestParam Integer pageSize,
             @RequestParam Integer pageNumber
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         SavingsAccount account = savingsAccountService.getById(user, savingsAccountId);
         ObjectListResponse responseBody = new ObjectListResponse(
                 "Savings transactions list: (PageNumber: %s, PageSize: %s)".formatted(pageNumber, pageSize),
@@ -86,7 +86,7 @@ public class SavingsTransactionController {
             @RequestParam Long id,
             @RequestBody @Valid SavingsTransactionUpdateDto dto
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         ObjectResponse responseBody = new ObjectResponse(
                 "Savings transaction with id <%s> has been successfully edited".formatted(id),
                 HttpStatus.OK.toString(),
@@ -99,7 +99,7 @@ public class SavingsTransactionController {
     public ResponseEntity<ObjectResponse> deleteById(
             @RequestParam Long id
     ) {
-        User user = userService.getCurrentUserEntity();
+        User user = userService.getSelfEntity();
         SavingsTransaction deletedTransaction = savingsTransactionService.getById(user, id);
         savingsTransactionService.deleteById(user, id);
         ObjectResponse responseBody = new ObjectResponse(
