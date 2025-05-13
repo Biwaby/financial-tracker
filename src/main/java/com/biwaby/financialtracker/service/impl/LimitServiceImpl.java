@@ -39,6 +39,12 @@ public class LimitServiceImpl implements LimitService {
                     "Limit already exists for wallet with id <%s>".formatted(wallet.getId())
             );
         }
+        if (dto.getTargetAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ResponseException(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "The <targetAmount> must be greater than zero"
+            );
+        }
 
         Limit limitToCreate = new Limit();
         limitToCreate.setUser(user);
@@ -120,10 +126,10 @@ public class LimitServiceImpl implements LimitService {
                 limitToUpdate.setType(LimitType.getTypeByValue(dto.getType()));
             }
             if (dto.getTargetAmount() != null) {
-                if (dto.getTargetAmount().compareTo(BigDecimal.ZERO) < 0) {
+                if (dto.getTargetAmount().compareTo(BigDecimal.ZERO) <= 0) {
                     throw new ResponseException(
                             HttpStatus.BAD_REQUEST.value(),
-                            "The <targetAmount> must be equal or greater than zero"
+                            "The <targetAmount> must be greater than zero"
                     );
                 }
                 limitToUpdate.setTargetAmount(dto.getTargetAmount());
@@ -155,4 +161,15 @@ public class LimitServiceImpl implements LimitService {
         holderWallet.setWalletLimit(null);
         limitRepository.delete(limitToDelete);
     }
+
+    @Override
+    @Transactional
+    public void deleteByWallet(User user, Wallet wallet) {
+        Limit limitToDelete = getByWallet(user, wallet);
+        Wallet holderWallet = limitToDelete.getWallet();
+        holderWallet.setWalletLimit(null);
+        limitRepository.delete(limitToDelete);
+    }
+
+
 }

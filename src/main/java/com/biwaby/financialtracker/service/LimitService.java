@@ -20,4 +20,5 @@ public interface LimitService {
     void updateForWallet(User user, Wallet wallet, BigDecimal amount);
     Limit update(User user, Long id, LimitUpdateDto dto);
     void deleteById(User user, Long id);
+    void deleteByWallet(User user, Wallet wallet);
 }

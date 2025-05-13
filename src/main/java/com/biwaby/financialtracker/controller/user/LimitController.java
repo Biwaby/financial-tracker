@@ -111,4 +111,20 @@ public class LimitController {
         );
         return ResponseEntity.ok(responseBody);
     }
+
+    @DeleteMapping("/delete-by-wallet")
+    public ResponseEntity<ObjectResponse> deleteByWalletId(
+            @RequestParam Long walletId
+    ) {
+        User user = userService.getSelfEntity();
+        Wallet wallet = walletService.getById(user, walletId);
+        Limit deletedLimit = limitService.getByWallet(user, wallet);
+        limitService.deleteByWallet(user, wallet);
+        ObjectResponse responseBody = new ObjectResponse(
+                "Limit has been successfully deleted for wallet with id <%s>".formatted(walletId),
+                HttpStatus.OK.toString(),
+                deletedLimit
+        );
+        return ResponseEntity.ok(responseBody);
+    }
 }
