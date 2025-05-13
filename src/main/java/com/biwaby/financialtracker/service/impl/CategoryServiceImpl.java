@@ -131,6 +131,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteById(User user, Long id) {
         Category categoryToDelete = getById(user, id);
+        Category commonCategory = getByName(user, "Common");
         List<WalletTransaction> walletsTransactionsWithDeletedCategory = categoryToDelete.getWalletsTransactionsWithCategory();
         if (categoryToDelete.getName().equals("Common") || categoryToDelete.getName().equals("Service")) {
             throw new ResponseException(
@@ -139,12 +140,11 @@ public class CategoryServiceImpl implements CategoryService {
             );
         }
 
-        setCommonCategoryForWalletsTransactions(user, walletsTransactionsWithDeletedCategory);
+        setCommonCategoryForWalletsTransactions(walletsTransactionsWithDeletedCategory, commonCategory);
         categoryRepository.delete(categoryToDelete);
     }
 
-    private void setCommonCategoryForWalletsTransactions(User user, List<WalletTransaction> walletsTransactions) {
-        Category commonCategory = getByName(user, "Common");
+    private void setCommonCategoryForWalletsTransactions(List<WalletTransaction> walletsTransactions, Category commonCategory) {
         if (!walletsTransactions.isEmpty()) {
             walletsTransactions.forEach(transaction -> transaction.setCategory(commonCategory));
             walletTransactionRepository.saveAll(walletsTransactions);

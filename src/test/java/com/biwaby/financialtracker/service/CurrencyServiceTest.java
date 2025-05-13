@@ -325,6 +325,7 @@ public class CurrencyServiceTest {
         verify(currencyRepository, times(1)).findById(any(Long.class));
         verify(currencyRepository, never()).delete(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
+        verifyNoInteractions(walletRepository, savingsAccountRepository);
     }
 
     @Test
@@ -339,5 +340,6 @@ public class CurrencyServiceTest {
         verify(currencyRepository, times(1)).findByLetterCode(any(String.class));
         verify(currencyRepository, never()).delete(any(Currency.class));
         verifyNoMoreInteractions(currencyRepository);
+        verifyNoInteractions(walletRepository, savingsAccountRepository);
     }
 }
