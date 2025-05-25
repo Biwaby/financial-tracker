@@ -1,10 +1,13 @@
 package com.biwaby.financialtracker.entity;
 
 import com.biwaby.financialtracker.enums.CategoryType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -22,22 +25,28 @@ public class Category {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
+    @Size(min = 3, max = 255, message = "The <name> must be between 3 and 255 characters long.")
+    @NotBlank(message = "The <name> must not be empty.")
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
+    @NotNull(message = "The <type> must not be empty.")
     @Column(name = "type", nullable = false, length = 255)
     @Enumerated(EnumType.STRING)
     private CategoryType type;
 
-    @Column(
-            name = "description",
-            columnDefinition = "TEXT"
-    )
+    @Column(name = "description", columnDefinition = "TEXT", nullable = true)
     private String description;
+
+    @OneToMany(targetEntity = WalletTransaction.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<WalletTransaction> walletsTransactionsWithCategory;
 
     @Override
     public final boolean equals(Object o) {

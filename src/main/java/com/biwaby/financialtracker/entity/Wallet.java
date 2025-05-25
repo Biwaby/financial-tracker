@@ -1,10 +1,12 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -22,6 +24,7 @@ public class Wallet {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
@@ -40,6 +43,33 @@ public class Wallet {
     @ManyToOne
     @JoinColumn(name = "currency_id", referencedColumnName = "id", nullable = false)
     private Currency currency;
+
+    @JsonIgnore
+    @OneToMany(
+            mappedBy = "wallet",
+            targetEntity = WalletTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @ToString.Exclude
+    private List<WalletTransaction> walletTransactions;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToOne(
+            targetEntity = Limit.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(
+            name = "limit_id",
+            referencedColumnName = "id",
+            unique = true,
+            nullable = true
+    )
+    private Limit walletLimit;
 
     @Override
     public final boolean equals(Object o) {

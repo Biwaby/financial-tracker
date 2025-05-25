@@ -1,10 +1,16 @@
 package com.biwaby.financialtracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -14,7 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @SequenceGenerator(sequenceName = "user_id_seq", name = "user_id_seq", allocationSize = 1)
@@ -32,13 +38,78 @@ public class User {
     @JoinColumn(
             name = "role_id",
             referencedColumnName = "id",
-            unique = true,
             nullable = false
     )
     private Role role;
 
     @Column(name = "registered_at", nullable = false)
     private LocalDateTime registeredAt;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Category.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Category> categories;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Limit.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Limit> limits;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = WalletTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<WalletTransaction> walletTransactions;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = Wallet.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Wallet> wallets;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = SavingsTransaction.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<SavingsTransaction> savingsTransactions;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(
+            mappedBy = "user",
+            targetEntity = SavingsAccount.class,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<SavingsAccount> savingsAccounts;
 
     @Override
     public final boolean equals(Object o) {
@@ -54,5 +125,10 @@ public class User {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 }
